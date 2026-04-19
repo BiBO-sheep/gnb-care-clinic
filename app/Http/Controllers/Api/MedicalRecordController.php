@@ -10,7 +10,7 @@ class MedicalRecordController extends Controller
 {
     public function getExamResults(Request $request)
     {
-        $records = MedicalRecord::with(['appointment', 'appointment.poli', 'prescriptions'])
+        $records = MedicalRecord::with(['appointment', 'appointment.poli', 'prescriptions', 'doctor'])
             ->where('user_id', $request->user()->id)
             ->latest()
             ->get();
