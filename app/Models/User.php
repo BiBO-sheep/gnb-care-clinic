@@ -93,4 +93,20 @@ class User extends Authenticatable
     {
         return $this->hasMany(Antrean::class, 'dokter_id');
     }
+
+    /**
+     * User memiliki banyak medical records
+     */
+    public function medical_records(): HasMany
+    {
+        return $this->hasMany(MedicalRecord::class);
+    }
+
+    /**
+     * User memiliki banyak appointments
+     */
+    public function appointments(): HasMany
+    {
+        return $this->hasMany(Appointment::class);
+    }
 }

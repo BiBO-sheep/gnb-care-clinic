@@ -27,4 +27,9 @@ class Appointment extends Model
     {
         return $this->belongsTo(Poli::class);
     }
+
+    public function medical_record()
+    {
+        return $this->hasOne(MedicalRecord::class);
+    }
 }

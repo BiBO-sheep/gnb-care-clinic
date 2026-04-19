@@ -64,4 +64,21 @@ class AppointmentController extends Controller
             'now_serving' => $nowServing ?? 'A-1',
         ]);
     }
+    public function getHistory(Request $request)
+    {
+        $userId = $request->user()->id;
+
+        // Ambil semua data appointment user ini, urutkan dari yang terbaru
+        // Pastikan load relasi 'poli' dan 'user'
+        $history = Appointment::with(['poli', 'user'])
+            ->where('user_id', $userId)
+            ->orderBy('tanggal', 'desc')
+            ->orderBy('jam', 'desc')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $history
+        ], 200);
+    }
 }
