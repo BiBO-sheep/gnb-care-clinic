@@ -4,7 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\KlinikController;
-
+use App\Http\Controllers\Api\AppointmentController;
+use App\Http\Controllers\Api\MedicalRecordController;
 // Rute Publik (Tidak perlu token / Belum Login)
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -23,4 +24,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/appointments', [App\Http\Controllers\Api\AppointmentController::class, 'store']);
     Route::get('/queue-status', [App\Http\Controllers\Api\AppointmentController::class, 'getQueueStatus']);
     Route::get('/history', [App\Http\Controllers\Api\AppointmentController::class, 'getHistory']);
+    Route::post('/simulate-examination/{id}', [AppointmentController::class, 'simulateExamination']);
+    Route::get('/exam-results', [MedicalRecordController::class, 'index']);
+    Route::get('/payment-summary/{appointment_id}', [AppointmentController::class, 'getPaymentSummary']);
+    Route::post('/payment-method/{invoiceId}', [AppointmentController::class, 'selectPaymentMethod']);
+    Route::post('/confirm-cashier-payment/{invoiceId}', [AppointmentController::class, 'confirmCashierPayment']);
 });

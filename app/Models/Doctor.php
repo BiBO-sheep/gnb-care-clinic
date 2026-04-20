@@ -13,6 +13,7 @@ class Doctor extends Model
         'poli_id',
         'nama_dokter',
         'spesialisasi',
+        'price',
         'foto_url',
     ];
 

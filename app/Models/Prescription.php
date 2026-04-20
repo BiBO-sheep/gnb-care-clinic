@@ -14,6 +14,7 @@ class Prescription extends Model
         'medicine_name',
         'dosage',
         'rules',
+        'price',
     ];
 
     public function medicalRecord()
