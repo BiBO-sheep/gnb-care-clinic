@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('transaksis', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('antrean_id')->constrained('antreans')->cascadeOnDelete();
+            $table->foreignId('appointment_id')->constrained('appointments')->cascadeOnDelete();
             $table->decimal('biaya_pemeriksaan', 12, 2)->default(0);
             $table->decimal('biaya_lab', 12, 2)->default(0);
             $table->decimal('biaya_obat', 12, 2)->default(0);

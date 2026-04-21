@@ -26,8 +26,10 @@ return new class extends Migration
             $table->string('emergency_contact_name')->nullable();
             $table->string('emergency_contact_phone')->nullable();
             $table->string('avatar')->nullable();
-            // Foreign Key ke tabel polis (khusus dokter)
             $table->unsignedBigInteger('poli_id')->nullable();
+            $table->string('spesialisasi')->nullable();
+            $table->double('price')->nullable();
+            $table->string('foto_url')->nullable();
 
             $table->rememberToken();
             $table->timestamps();

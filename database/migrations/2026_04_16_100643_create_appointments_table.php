@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id'); // Pasien yang login
-            $table->unsignedBigInteger('poli_id'); // Poli yang dipilih
-            $table->string('tanggal'); // Tanggal berobat
-            $table->string('jam'); // Jam berobat
-            $table->string('status')->default('confirmed'); // Otomatis confirmed (Opsi A)
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('poli_id')->constrained('polis')->onDelete('cascade');
+            $table->foreignId('dokter_id')->nullable()->constrained('users')->onDelete('cascade');
+            $table->string('queue_number')->nullable();
+            $table->string('tanggal');
+            $table->string('jam');
+            $table->enum('status', ['pending', 'scheduled', 'check_in', 'pemeriksaan', 'selesai', 'batal'])->default('scheduled');
             $table->timestamps();
         });
     }

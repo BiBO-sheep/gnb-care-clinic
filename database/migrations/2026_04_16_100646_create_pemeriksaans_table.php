@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('pemeriksaans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('antrean_id')->constrained('antreans')->cascadeOnDelete();
+            $table->foreignId('appointment_id')->constrained('appointments')->cascadeOnDelete();
             $table->foreignId('dokter_id')->constrained('users')->cascadeOnDelete();
             $table->text('keluhan');
             $table->text('diagnosa')->nullable();

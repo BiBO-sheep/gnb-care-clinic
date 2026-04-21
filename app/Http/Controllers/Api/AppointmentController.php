@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
-use App\Models\MedicalRecord; // 👇 INI YANG KURANG TADI
-use App\Models\Prescription;  // 👇 INI JUGA KURANG
+use App\Models\MedicalRecord;
+use App\Models\Prescription;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,27 +19,25 @@ class AppointmentController extends Controller
             'jam' => 'required',
         ]);
 
-        // Pastikan user benar-benar login via sanctum
         if (!Auth::guard('sanctum')->check()) {
             return response()->json(['message' => 'Unauthenticated'], 401);
         }
 
         $userId = Auth::guard('sanctum')->id();
 
-        // Logika nomor antrean
         $countToday = Appointment::where('tanggal', $request->tanggal)->count();
         $queueNumber = 'A-' . ($countToday + 1);
 
         $appointment = Appointment::create([
             'user_id' => $userId,
             'poli_id' => $request->poli_id,
+            'dokter_id' => $request->dokter_id ?? null, // Tambahan jika dokter_id dikirim
             'queue_number' => $queueNumber,
             'tanggal' => $request->tanggal,
             'jam' => $request->jam,
-            'status' => 'confirmed'
+            'status' => 'scheduled'
         ]);
 
-        // Load relasi user biar Flutter dapet nama pasiennya
         return response()->json([
             'success' => true,
             'message' => 'Booking sukses!',
@@ -47,19 +45,18 @@ class AppointmentController extends Controller
         ], 201);
     }
     
-    // Tambahkan Request $request di dalam kurung ini
     public function getQueueStatus(Request $request)
     {
-        $userId = $request->user()->id; // Sekarang $request tidak akan error lagi
+        $userId = $request->user()->id;
         $today = date('M d, 2026');
 
         $myAppointment = Appointment::where('user_id', $userId)
             ->where('tanggal', $today)
-            ->where('status', 'confirmed')
+            ->whereIn('status', ['scheduled', 'check_in', 'pemeriksaan'])
             ->first();
 
         $nowServing = Appointment::where('tanggal', $today)
-            ->where('status', 'confirmed')
+            ->where('status', 'pemeriksaan')
             ->min('queue_number');
 
         return response()->json([
@@ -72,9 +69,7 @@ class AppointmentController extends Controller
     {
         $userId = $request->user()->id;
 
-        // Ambil semua data appointment user ini, urutkan dari yang terbaru
-        // Pastikan load relasi 'poli' dan 'user'
-        $history = Appointment::with(['poli', 'user'])
+        $history = Appointment::with(['poli', 'user', 'dokter'])
             ->where('user_id', $userId)
             ->orderBy('tanggal', 'desc')
             ->orderBy('jam', 'desc')
@@ -89,21 +84,16 @@ class AppointmentController extends Controller
     public function simulateExamination($id)
     {
         try {
-            // 1. Cari data booking tiketnya
             $appointment = Appointment::findOrFail($id);
 
-            // Cek kalau udah selesai, jangan diperiksa dua kali
-            if ($appointment->status === 'completed') {
+            if ($appointment->status === 'selesai') {
                 return response()->json(['success' => false, 'message' => 'Pasien ini sudah diperiksa.'], 400);
             }
 
-            // 2. Ubah status antrean jadi selesai
-            $appointment->status = 'completed';
+            $appointment->status = 'selesai';
             $appointment->save();
 
-            // 3. Bikin Rekam Medis Otomatis
-            // Asumsi: Ambil ID dokter pertama dari poli tempat dia berobat (kalau ada)
-            $doctorId = 1; // Default ID dokter kalau relasinya belum sempurna
+            $doctorId = $appointment->dokter_id ?? 1;
             
             $record = MedicalRecord::create([
                 'user_id' => $appointment->user_id,
@@ -114,10 +104,10 @@ class AppointmentController extends Controller
                 'treatment_plan' => 'Istirahat total 2 hari, hindari minuman dingin dan berminyak.',
             ]);
 
-            $doctor = \App\Models\Doctor::find($doctorId) ?? \App\Models\Doctor::first();
+            $doctor = \App\Models\User::where('role', 'dokter')->find($doctorId) 
+                      ?? \App\Models\User::where('role', 'dokter')->first();
             $consultationPrice = $doctor ? $doctor->price : 100000;
 
-            // 4. Kasih Resep Obat Otomatis
             $prescriptionsData = [
                 [
                     'medical_record_id' => $record->id,
@@ -138,12 +128,11 @@ class AppointmentController extends Controller
                     'updated_at' => now(),
                 ]
             ];
-            Prescription::insert($prescriptionsData);
+            \App\Models\Prescription::insert($prescriptionsData);
 
             $totalMedicines = collect($prescriptionsData)->sum('price');
             $grandTotal = $consultationPrice + $totalMedicines;
 
-            // 5. Generate Invoice
             $invoice = \App\Models\Invoice::create([
                 'appointment_id' => $appointment->id,
                 'user_id' => $appointment->user_id,
@@ -156,7 +145,7 @@ class AppointmentController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Simulasi Berhasil! Dokter selesai memeriksa.',
-                'data' => $record->load('prescriptions'), // Balikin data sama obatnya sekalian
+                'data' => $record->load('prescriptions'),
                 'invoice' => $invoice
             ]);
 
@@ -250,6 +239,23 @@ class AppointmentController extends Controller
             'success' => true,
             'message' => 'Payment method updated successfully.',
             'data' => $invoice
+        ], 200);
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|string'
+        ]);
+
+        $appointment = Appointment::findOrFail($id);
+        $appointment->status = $request->status;
+        $appointment->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status updated successfully.',
+            'data' => $appointment
         ], 200);
     }
 }

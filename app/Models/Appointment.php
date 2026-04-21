@@ -12,20 +12,26 @@ class Appointment extends Model
     protected $fillable = [
         'user_id',
         'poli_id',
+        'dokter_id',
         'queue_number',
         'tanggal',
         'jam',
         'status',
     ];
 
-    // 👇 TAMBAHKAN INI SUPAYA BISA AMBIL DATA USER 👇
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
     public function poli()
     {
         return $this->belongsTo(Poli::class);
+    }
+
+    public function dokter()
+    {
+        return $this->belongsTo(User::class, 'dokter_id');
     }
 
     public function medical_record()
@@ -36,5 +42,15 @@ class Appointment extends Model
     public function invoice()
     {
         return $this->hasOne(Invoice::class);
+    }
+
+    public function pemeriksaan()
+    {
+        return $this->hasOne(Pemeriksaan::class);
+    }
+
+    public function transaksi()
+    {
+        return $this->hasOne(Transaksi::class);
     }
 }

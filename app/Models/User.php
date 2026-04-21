@@ -33,6 +33,9 @@ class User extends Authenticatable
         'emergency_contact_phone',
         'avatar',
         'poli_id',
+        'spesialisasi',
+        'price',
+        'foto_url',
     ];
 
     /**
