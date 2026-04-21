@@ -9,6 +9,36 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|unique:users',
+            'password' => 'required|string|min:8',
+            'phone' => 'nullable|string'
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'phone' => $request->phone,
+            'blood_type' => $request->blood_type,
+                // 'address' => $request->address,
+                // 'avatar' => $request->avatar,
+        ]);
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Registrasi berhasil',
+            'data' => $user,
+            'access_token' => $token,
+            'token_type' => 'Bearer'
+        ], 201);
+    }
+
     // Fungsi untuk Login dari Flutter
     public function login(Request $request)
     {

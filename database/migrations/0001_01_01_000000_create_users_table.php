@@ -22,7 +22,7 @@ return new class extends Migration
             $table->enum('role', ['admin', 'dokter', 'pasien'])->default('pasien');
             $table->string('phone')->nullable();
             $table->text('address')->nullable();
-            $table->enum('blood_type', ['A', 'B', 'AB', 'O'])->nullable();
+            $table->string('blood_type', 5)->nullable();
             $table->string('emergency_contact_name')->nullable();
             $table->string('emergency_contact_phone')->nullable();
             $table->string('avatar')->nullable();

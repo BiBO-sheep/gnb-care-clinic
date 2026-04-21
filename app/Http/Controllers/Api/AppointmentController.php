@@ -168,27 +168,33 @@ class AppointmentController extends Controller
         }
     }
 
-    public function getPaymentSummary(Request $request, $appointment_id)
+    public function getPaymentSummary(Request $request, $id)
     {
-        $invoice = \App\Models\Invoice::with([
-            'appointment.doctor',
-            'appointment.poli',
-            'appointment.medical_record.prescriptions'
-        ])->where('appointment_id', $appointment_id)
-          ->where('user_id', $request->user()->id)
-          ->first();
+        try {
+            $invoice = \App\Models\Invoice::with([
+                'appointment.poli',
+                'appointment.medical_record.doctor',
+                'appointment.medical_record.prescriptions'
+            ])->where('appointment_id', $id)
+              ->where('user_id', $request->user()->id)
+              ->first();
 
-        if (!$invoice) {
+            if (!$invoice) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invoice belum tersedia untuk appointment ini.'
+                ], 404);
+            }
+
             return response()->json([
-                'success' => false,
-                'message' => 'Invoice belum tersedia untuk appointment ini.'
-            ], 404);
+                'success' => true,
+                'data' => $invoice
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
         }
-
-        return response()->json([
-            'success' => true,
-            'data' => $invoice
-        ], 200);
     }
 
     public function confirmCashierPayment(Request $request, $invoice_id)
