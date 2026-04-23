@@ -10,11 +10,22 @@ use Laravel\Sanctum\HasApiTokens; // Penting untuk API Flutter
 use Illuminate\Database\Eloquent\SoftDeletes; // Untuk fitur hapus sementara
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory\Illuminate\Database\Eloquent\Factories\HasFactory */
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+
+    /**
+     * Hanya user dengan role 'admin' yang bisa mengakses Filament Dashboard.
+     * Pasien dan Dokter yang mencoba login lewat web akan ditolak.
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->role === 'admin';
+    }
 
     /**
      * The attributes that are mass assignable.

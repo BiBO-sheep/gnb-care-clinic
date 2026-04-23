@@ -14,6 +14,8 @@ class MedicalRecord extends Model
         'doctor_id',
         'appointment_id',
         'diagnosis',
+        'tindakan',
+        'catatan_obat',
         'doctor_notes',
         'treatment_plan',
     ];

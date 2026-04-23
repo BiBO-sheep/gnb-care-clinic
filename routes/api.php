@@ -6,6 +6,9 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\KlinikController;
 use App\Http\Controllers\Api\AppointmentController;
 use App\Http\Controllers\Api\MedicalRecordController;
+use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\InvoiceController;
+
 // Rute Publik (Tidak perlu token / Belum Login)
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -33,4 +36,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/payment/process', [App\Http\Controllers\Api\PaymentController::class, 'process']);
     Route::post('/payment-method/{invoiceId}', [AppointmentController::class, 'selectPaymentMethod']);
     Route::post('/confirm-cashier-payment/{invoiceId}', [AppointmentController::class, 'confirmCashierPayment']);
+
+    // Notifications
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::post('/notifications/mark-read', [NotificationController::class, 'markAsRead']);
+
+    // Invoices
+    Route::get('/invoice/{appointmentId}', [InvoiceController::class, 'show']);
 });
+
