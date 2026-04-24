@@ -20,6 +20,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return response()->json(['status' => 'success', 'data' => $request->user()]);
     });
+    Route::get('/dashboard', [App\Http\Controllers\Api\DashboardController::class, 'getDashboardData']);
     Route::get('/profile', [App\Http\Controllers\Api\ProfileController::class, 'show']);
     Route::put('/profile/update', [App\Http\Controllers\Api\ProfileController::class, 'update']);
     Route::post('/logout', [AuthController::class, 'logout']);
