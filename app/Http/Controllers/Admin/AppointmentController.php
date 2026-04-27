@@ -10,6 +10,7 @@ use App\Models\Invoice;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Events\AntreanDiupdate;
 
 class AppointmentController extends Controller
 {
@@ -19,6 +20,9 @@ class AppointmentController extends Controller
         $appointment = Appointment::findOrFail($id);
         $appointment->update(['status' => 'check_in']);
 
+        // 👇 TOA DIBUNYIKAN: Pasien Dipanggil! 👇
+        broadcast(new AntreanDiupdate($appointment));
+
         return back()->with('success', 'Pasien nomor ' . $appointment->queue_number . ' dipanggil!');
     }
 
@@ -27,6 +31,9 @@ class AppointmentController extends Controller
     {
         $appointment = Appointment::findOrFail($id);
         $appointment->update(['status' => 'pemeriksaan']);
+
+        // 👇 TOA DIBUNYIKAN: Pasien Masuk Ruangan! 👇
+        broadcast(new AntreanDiupdate($appointment));
 
         return redirect('/admin/doctor')->with('success', 'Pasien sudah berada di ruang dokter.');
     }
@@ -86,7 +93,11 @@ class AppointmentController extends Controller
             // E. Ubah Status Antrean Selesai
             $appointment->update(['status' => 'selesai']);
 
-            DB::commit();
+            DB::commit(); // Save dulu datanya dengan aman ke Database
+
+            // 👇 TOA DIBUNYIKAN: Pemeriksaan Selesai, tagihan meluncur! 👇
+            broadcast(new AntreanDiupdate($appointment));
+
             return redirect('/admin/queue')->with('success', 'Pemeriksaan selesai! Resep & Tagihan berhasil dikirim ke HP Pasien.');
 
         } catch (\Exception $e) {

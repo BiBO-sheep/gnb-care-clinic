@@ -120,4 +120,21 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Tune in ke frekuensi 'klinik-channel'
+        window.Echo.channel('klinik-channel')
+            .listen('.antrean.berubah', (e) => {
+                console.log('ADA UPDATE ANTREAN BOS:', e.appointment);
+                
+                // Nah, di sini lu bisa pakai JavaScript murni buat ngubah angka di layar
+                // Atau yang paling gampang sementara:
+                alert("Ada perubahan antrean! Nomor " + e.appointment.queue_number + " dipanggil.");
+                
+                // Kalau mau bener-bener gak kedip, kita harus update DOM manual (document.getElementById)
+                // Sementara biar gampang lihat perubahannya, kita reload mulus via JS
+                window.location.reload(); 
+            });
+    });
+</script>
 @endsection
