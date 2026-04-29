@@ -106,24 +106,15 @@ class AppointmentController extends Controller
 
             $doctor = \App\Models\User::where('role', 'dokter')->find($doctorId) 
                       ?? \App\Models\User::where('role', 'dokter')->first();
-            $consultationPrice = $doctor ? $doctor->price : 100000;
+            $consultationPrice = 150000; // Sesuai skenario ISPA
 
             $prescriptionsData = [
                 [
                     'medical_record_id' => $record->id,
                     'medicine_name' => 'Paracetamol 500mg',
-                    'dosage' => '1 Tablet',
-                    'rules' => '3x Sehari (Sesudah Makan)',
-                    'price' => 15000,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'medical_record_id' => $record->id,
-                    'medicine_name' => 'Amoxicillin 500mg',
-                    'dosage' => '1 Kapsul',
-                    'rules' => '3x Sehari (Habiskan)',
-                    'price' => 35000,
+                    'dosage' => '10 Tablet',
+                    'rules' => '3x1 Sesudah Makan',
+                    'price' => 50000,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]
@@ -157,34 +148,28 @@ class AppointmentController extends Controller
         }
     }
 
-    public function getPaymentSummary(Request $request, $id)
-    {
-        try {
-            $invoice = \App\Models\Invoice::with([
-                'appointment.poli',
-                'appointment.medical_record.doctor',
-                'appointment.medical_record.prescriptions'
-            ])->where('appointment_id', $id)
-              ->where('user_id', $request->user()->id)
-              ->first();
+    // Ambil Rincian Tagihan & Resep untuk Flutter
+    public function getPaymentSummary($id)
+{
+    // Kita ambil data appointment + user + rekam medis + obat + invoice
+    $appointment = \App\Models\Appointment::with([
+        'user', 
+        'medical_record.prescriptions', 
+        'invoice'
+    ])->findOrFail($id);
 
-            if (!$invoice) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Invoice belum tersedia untuk appointment ini.'
-                ], 404);
-            }
-
-            return response()->json([
-                'success' => true,
-                'data' => $invoice
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 500);
-        }
-    }
+    return response()->json([
+        'status' => 'success',
+        'data' => [
+            'nama_pasien' => $appointment->user->name, // Ambil nama asli
+            'nomor_antrean' => $appointment->queue_number, // Ambil nomor asli
+            'status_antrean' => $appointment->status,
+            'diagnosis' => $appointment->medical_record->diagnosis ?? '-',
+            'medicines' => $appointment->medical_record->prescriptions ?? [],
+            'invoice' => $appointment->invoice
+        ]
+    ]);
+}
 
     public function confirmCashierPayment(Request $request, $invoice_id)
     {

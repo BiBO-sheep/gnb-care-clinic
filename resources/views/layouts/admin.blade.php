@@ -59,13 +59,13 @@
 
             <p class="px-2 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 mt-6">Medis & Kasir</p>
             
-            <a href="#" class="flex items-center px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-primary rounded-xl font-semibold transition-all">
-                <i class="fa-solid fa-user-doctor w-6 text-center mr-2"></i> Ruang Dokter
-            </a>
+            <a href="/admin/doctor" class="flex items-center px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-primary rounded-xl font-semibold transition-all">
+    <i class="fa-solid fa-user-doctor w-6 text-center mr-2"></i> Ruang Dokter
+</a>
 
-            <a href="#" class="flex items-center px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-primary rounded-xl font-semibold transition-all">
-                <i class="fa-solid fa-cash-register w-6 text-center mr-2"></i> Pembayaran
-            </a>
+           <a href="/admin/kasir" class="flex items-center px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-primary rounded-xl font-semibold transition-all">
+    <i class="fa-solid fa-cash-register w-6 text-center mr-2"></i> Pembayaran
+</a>
         </nav>
 
         <div class="p-4 border-t border-gray-100">

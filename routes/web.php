@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Models\Appointment;
 use App\Http\Controllers\Admin\AppointmentController;
+use App\Http\Controllers\Admin\KasirController;
+use App\Http\Controllers\Admin\DoctorController;
 
 Route::get('/', function () {
     return view('welcome'); 
@@ -42,3 +44,7 @@ Route::get('/admin/doctor', function () {
 Route::post('/admin/appointment/{id}/call', [AppointmentController::class, 'callPasien']);
 Route::post('/admin/appointment/{id}/progress', [AppointmentController::class, 'masukDokter']);
 Route::post('/admin/appointment/{id}/prescribe', [AppointmentController::class, 'simpanResep']);
+Route::get('/admin/kasir', [KasirController::class, 'index']);
+Route::post('/admin/kasir/{id}/lunas', [KasirController::class, 'konfirmasiLunas']);
+Route::get('/admin/doctor', [DoctorController::class, 'index']);
+Route::get('/admin/doctor/examine/{id}', [DoctorController::class, 'periksa']);

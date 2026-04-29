@@ -81,14 +81,15 @@ class AppointmentController extends Controller
             }
 
             // D. Buat Tagihan Kasir (Invoice)
-            Invoice::create([
-                'appointment_id' => $appointment->id,
-                'user_id' => $appointment->user_id,
-                'total_consultation' => $consultationPrice,
-                'total_medicines' => $totalMedicines,
-                'grand_total' => $consultationPrice + $totalMedicines,
-                'status' => 'unpaid',
-            ]);
+            // Bagian simpanResep di Admin/AppointmentController.php
+Invoice::create([
+    'appointment_id' => $appointment->id,
+    'user_id' => $appointment->user_id,
+    'total_consultation' => $consultationPrice, // <-- Pastikan ini HANYA harga dokter
+    'total_medicines' => $totalMedicines,       // <-- Pastikan ini HANYA harga obat
+    'grand_total' => $consultationPrice + $totalMedicines, // <-- Ini baru penjumlahannya
+    'status' => 'unpaid',
+]);
 
             // E. Ubah Status Antrean Selesai
             $appointment->update(['status' => 'selesai']);
