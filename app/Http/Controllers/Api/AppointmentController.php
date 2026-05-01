@@ -243,4 +243,26 @@ class AppointmentController extends Controller
             'data' => $appointment
         ], 200);
     }
+
+    public function getActiveQueue(Request $request)
+    {
+        $appointment = Appointment::where('user_id', Auth::id())
+            ->whereIn('status', ['scheduled', 'check_in', 'pemeriksaan'])
+            ->with(['dokter', 'poli'])
+            ->orderBy('tanggal', 'asc')
+            ->orderBy('jam', 'asc')
+            ->first();
+
+        if (!$appointment) {
+            return response()->json([
+                'status' => 'success',
+                'data' => null
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $appointment
+        ]);
+    }
 }

@@ -61,7 +61,7 @@
                             <span class="text-lg font-extrabold text-gray-900">Rp {{ number_format($inv->grand_total, 0, ',', '.') }}</span>
                         </td>
                         <td class="px-6 py-4 text-center">
-                            <form action="/admin/kasir/{{ $inv->id }}/lunas" method="POST">
+                            <form action="/klinik/kasir/{{ $inv->id }}/lunas" method="POST">
                                 @csrf
                                 <button type="submit" class="bg-white hover:bg-primary hover:text-white border border-primary text-primary font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-sm">
                                     Konfirmasi Lunas

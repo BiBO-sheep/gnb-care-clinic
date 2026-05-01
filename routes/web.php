@@ -5,46 +5,30 @@ use App\Models\Appointment;
 use App\Http\Controllers\Admin\AppointmentController;
 use App\Http\Controllers\Admin\KasirController;
 use App\Http\Controllers\Admin\DoctorController;
+use App\Http\Controllers\Admin\PasienController;
 
 Route::get('/', function () {
     return view('welcome'); 
 });
 
-// 1. RUTE MONITOR ANTREAN (Resepsionis)
-Route::get('/admin/queue', function () { 
-    // Yang lagi di dalem ruang dokter (Status: pemeriksaan)
-    $nowServing = Appointment::with(['user', 'poli', 'dokter'])
-                    ->where('status', 'pemeriksaan')
-                    ->first();
+Route::middleware(['auth'])->prefix('klinik')->group(function () {
+    // 1. RUTE MONITOR ANTREAN (Resepsionis)
+    Route::get('/queue', [AppointmentController::class, 'queue']);
 
-    // Daftar tunggu hari ini (Status: scheduled / check_in)
-    // Catatan: Karena di API lu tanggalnya pake format text, kita pastiin sort by ID aja biar gampang
-    $waitingList = Appointment::with(['user', 'poli'])
-                    ->whereIn('status', ['scheduled', 'check_in'])
-                    ->orderBy('id', 'asc')
-                    ->get();
+    // 2. RUTE RUANG DOKTER (Ngetik Resep)
+    Route::get('/doctor', [DoctorController::class, 'index']);
+    Route::get('/doctor/examine/{id}', [DoctorController::class, 'periksa']);
 
-    $totalHariIni = Appointment::count();
-    $selesai = Appointment::where('status', 'selesai')->count();
+    // 3. RUTE ACTION ADMIN (Tombol Panggil, Masuk, Selesai)
+    Route::post('/appointment/{id}/call', [AppointmentController::class, 'callPasien']);
+    Route::post('/appointment/{id}/progress', [AppointmentController::class, 'masukDokter']);
+    Route::post('/appointment/{id}/prescribe', [AppointmentController::class, 'simpanResep']);
+    
+    // 4. RUTE KASIR
+    Route::get('/kasir', [KasirController::class, 'index']);
+    Route::post('/kasir/{id}/lunas', [KasirController::class, 'konfirmasiLunas']);
 
-    return view('admin.queue', compact('nowServing', 'waitingList', 'totalHariIni', 'selesai')); 
+    // 5. RUTE BUKU PASIEN & REKAM MEDIS
+    Route::get('/pasien', [PasienController::class, 'index']);
+    Route::get('/pasien/{id}', [PasienController::class, 'show']);
 });
-
-// 2. RUTE RUANG DOKTER (Ngetik Resep)
-Route::get('/admin/doctor', function () {
-    // Cari pasien yang statusnya 'pemeriksaan'
-    $activePatient = Appointment::with(['user', 'poli'])
-                    ->where('status', 'pemeriksaan')
-                    ->first();
-
-    return view('admin.doctor', compact('activePatient'));
-});
-
-// 3. RUTE ACTION ADMIN (Tombol Panggil, Masuk, Selesai)
-Route::post('/admin/appointment/{id}/call', [AppointmentController::class, 'callPasien']);
-Route::post('/admin/appointment/{id}/progress', [AppointmentController::class, 'masukDokter']);
-Route::post('/admin/appointment/{id}/prescribe', [AppointmentController::class, 'simpanResep']);
-Route::get('/admin/kasir', [KasirController::class, 'index']);
-Route::post('/admin/kasir/{id}/lunas', [KasirController::class, 'konfirmasiLunas']);
-Route::get('/admin/doctor', [DoctorController::class, 'index']);
-Route::get('/admin/doctor/examine/{id}', [DoctorController::class, 'periksa']);

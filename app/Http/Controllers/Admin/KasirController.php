@@ -10,14 +10,23 @@ class KasirController extends Controller
 {
     public function index()
     {
-        // Ambil semua tagihan yang belum dibayar, urutkan dari yang terbaru
+        $today = \Carbon\Carbon::today()->toDateString();
+
+        // Ambil semua tagihan yang belum dibayar HANYA HARI INI
         $invoices = Invoice::with(['user', 'appointment.poli'])
+                    ->whereHas('appointment', function($q) use ($today) {
+                        $q->whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') = ?", [$today]);
+                    })
                     ->where('status', 'unpaid')
                     ->orderBy('created_at', 'desc')
                     ->get();
 
-        // Hitung total uang yang nunggu dibayar hari ini
-        $totalTagihan = Invoice::where('status', 'unpaid')->sum('grand_total');
+        // Hitung total uang yang nunggu dibayar hari ini saja
+        $totalTagihan = Invoice::whereHas('appointment', function($q) use ($today) {
+                        $q->whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') = ?", [$today]);
+                    })
+                    ->where('status', 'unpaid')
+                    ->sum('grand_total');
         $jumlahInvoice = $invoices->count();
 
         return view('admin.kasir', compact('invoices', 'totalTagihan', 'jumlahInvoice'));

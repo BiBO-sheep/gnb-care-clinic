@@ -14,7 +14,7 @@
             </div>
         </div>
 
-        <form action="/admin/appointment/{{ $appointment->id }}/prescribe" method="POST" class="space-y-6">
+        <form action="/klinik/appointment/{{ $appointment->id }}/prescribe" method="POST" class="space-y-6">
             @csrf
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2">Diagnosis Penyakit</label>

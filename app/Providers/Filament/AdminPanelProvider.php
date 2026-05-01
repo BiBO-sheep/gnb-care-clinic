@@ -28,8 +28,16 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->font('Plus Jakarta Sans')
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::hex('#006A6A'),
+            ])
+            ->navigationItems([
+                \Filament\Navigation\NavigationItem::make('Operasional Klinik')
+                    ->url('/klinik/queue')
+                    ->icon('heroicon-o-computer-desktop')
+                    ->group('Sistem Medis')
+                    ->sort(1),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

@@ -14,6 +14,39 @@ use App\Events\AntreanDiupdate;
 
 class AppointmentController extends Controller
 {
+    public function queue()
+    {
+        $today = \Carbon\Carbon::today()->toDateString();
+
+        // Yang lagi di dalem ruang dokter (Status: pemeriksaan, hanya untuk hari ini)
+        $nowServing = Appointment::with(['user', 'poli', 'dokter'])
+                        ->whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') = ?", [$today])
+                        ->where('status', 'pemeriksaan')
+                        ->first();
+
+        // 1. Antrean Hari Ini (Status: scheduled)
+        $antreanHariIni = Appointment::with(['user', 'poli'])
+                        ->whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') = ?", [$today])
+                        ->where('status', 'scheduled')
+                        ->orderBy('id', 'asc')
+                        ->get();
+
+        // 2. Jadwal Mendatang (Status: scheduled)
+        $antreanMendatang = Appointment::with(['user', 'poli'])
+                        ->whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') > ?", [$today])
+                        ->where('status', 'scheduled')
+                        ->orderByRaw("STR_TO_DATE(tanggal, '%b %d, %Y') ASC")
+                        ->orderBy('id', 'asc')
+                        ->get();
+
+        $totalHariIni = Appointment::whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') = ?", [$today])->count();
+        $selesai = Appointment::whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') = ?", [$today])
+                    ->where('status', 'selesai')
+                    ->count();
+
+        return view('admin.queue', compact('nowServing', 'antreanHariIni', 'antreanMendatang', 'totalHariIni', 'selesai'));
+    }
+
     // 1. Fungsi Panggil Pasien (Ubah status jadi check_in)
     public function callPasien($id)
     {
@@ -35,7 +68,7 @@ class AppointmentController extends Controller
         // 👇 TOA DIBUNYIKAN: Pasien Masuk Ruangan! 👇
         broadcast(new AntreanDiupdate($appointment));
 
-        return redirect('/admin/doctor')->with('success', 'Pasien sudah berada di ruang dokter.');
+        return redirect('/klinik/doctor')->with('success', 'Pasien sudah berada di ruang dokter.');
     }
 
     // 3. Fungsi Simpan Resep & Tagihan (Mirip banget sama API Simulate lu)
@@ -99,7 +132,7 @@ Invoice::create([
             // 👇 TOA DIBUNYIKAN: Pemeriksaan Selesai, tagihan meluncur! 👇
             broadcast(new AntreanDiupdate($appointment));
 
-            return redirect('/admin/queue')->with('success', 'Pemeriksaan selesai! Resep & Tagihan berhasil dikirim ke HP Pasien.');
+            return redirect('/klinik/queue')->with('success', 'Pemeriksaan selesai! Resep & Tagihan berhasil dikirim ke HP Pasien.');
 
         } catch (\Exception $e) {
             DB::rollback();

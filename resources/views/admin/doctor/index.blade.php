@@ -18,7 +18,7 @@
                 <p class="text-sm text-gray-600">Antrean: <b>{{ $activePatient->queue_number }}</b></p>
             </div>
         </div>
-        <a href="/admin/doctor/examine/{{ $activePatient->id }}" class="bg-primary text-white px-8 py-3 rounded-xl font-bold hover:bg-[#004f54] transition-all">
+        <a href="/klinik/doctor/examine/{{ $activePatient->id }}" class="bg-primary text-white px-8 py-3 rounded-xl font-bold hover:bg-[#004f54] transition-all">
             Lanjutkan Input Resep
         </a>
     </div>
@@ -36,7 +36,7 @@
                     <span class="bg-white px-3 py-1 rounded-full text-[10px] font-bold text-gray-400 border border-gray-100">{{ $patient->jam }}</span>
                 </div>
                 <h4 class="font-bold text-gray-800 mb-5 text-lg">{{ $patient->user->name }}</h4>
-                <a href="/admin/doctor/examine/{{ $patient->id }}" class="block text-center bg-white border border-gray-200 text-gray-700 py-3 rounded-xl font-bold text-sm hover:bg-primary hover:text-white hover:border-primary transition-all">
+                <a href="/klinik/doctor/examine/{{ $patient->id }}" class="block text-center bg-white border border-gray-200 text-gray-700 py-3 rounded-xl font-bold text-sm hover:bg-primary hover:text-white hover:border-primary transition-all">
                     Mulai Pemeriksaan
                 </a>
             </div>

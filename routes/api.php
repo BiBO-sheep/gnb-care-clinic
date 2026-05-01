@@ -44,5 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Invoices
     Route::get('/invoice/{appointmentId}', [InvoiceController::class, 'show']);
+    Route::get('/active-queue', [App\Http\Controllers\Api\AppointmentController::class, 'getActiveQueue']);
 });
+
 

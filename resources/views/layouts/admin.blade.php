@@ -25,7 +25,7 @@
                         primaryLight: '#E0F7F7',
                         secondary: '#FF7F50',
                         dark: '#121212',
-                        background: '#F4F3F1', // Warna background kalem khas Flutter lu
+                        background: '#F4F3F1', 
                     }
                 }
             }
@@ -43,35 +43,39 @@
         </div>
 
         <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-1">
+            <a href="/admin" class="flex items-center px-4 py-3 mb-6 text-white bg-primary rounded-xl hover:bg-primary/90 transition-all font-bold shadow-md shadow-primary/20">
+                <i class="fa-solid fa-database w-6 text-center mr-2"></i> Kembali ke Master Data
+            </a>
+
             <p class="px-2 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Menu Utama</p>
             
-            <a href="#" class="flex items-center px-4 py-3 bg-primaryLight text-primary rounded-xl font-bold transition-all">
-                <i class="fa-solid fa-house w-6 text-center mr-2"></i> Dashboard
-            </a>
-            
-            <a href="#" class="flex items-center px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-primary rounded-xl font-semibold transition-all">
-                <i class="fa-solid fa-users w-6 text-center mr-2"></i> Pasien
-            </a>
-            
-            <a href="#" class="flex items-center px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-primary rounded-xl font-semibold transition-all">
+            <a href="/klinik/queue" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/queue*') ? 'bg-primaryLight text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
                 <i class="fa-solid fa-list-ol w-6 text-center mr-2"></i> Monitor Antrean
+            </a>
+
+            <a href="/klinik/pasien" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/pasien*') ? 'bg-primaryLight text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
+                <i class="fa-solid fa-address-book w-6 text-center mr-2"></i> Buku Pasien
             </a>
 
             <p class="px-2 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 mt-6">Medis & Kasir</p>
             
-            <a href="/admin/doctor" class="flex items-center px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-primary rounded-xl font-semibold transition-all">
-    <i class="fa-solid fa-user-doctor w-6 text-center mr-2"></i> Ruang Dokter
-</a>
+            <a href="/klinik/doctor" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/doctor*') ? 'bg-primaryLight text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
+                <i class="fa-solid fa-user-doctor w-6 text-center mr-2"></i> Ruang Dokter
+            </a>
 
-           <a href="/admin/kasir" class="flex items-center px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-primary rounded-xl font-semibold transition-all">
-    <i class="fa-solid fa-cash-register w-6 text-center mr-2"></i> Pembayaran
-</a>
+            <a href="/klinik/kasir" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/kasir*') ? 'bg-primaryLight text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
+                <i class="fa-solid fa-cash-register w-6 text-center mr-2"></i> Pembayaran
+            </a>
+
         </nav>
 
         <div class="p-4 border-t border-gray-100">
-            <a href="#" class="flex items-center px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl font-bold transition-all">
-                <i class="fa-solid fa-arrow-right-from-bracket w-6 text-center mr-2"></i> Keluar
-            </a>
+            <form action="/admin/logout" method="POST" class="w-full">
+                @csrf
+                <button type="submit" class="w-full flex items-center px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl font-bold transition-all">
+                    <i class="fa-solid fa-arrow-right-from-bracket w-6 text-center mr-2"></i> Keluar
+                </button>
+            </form>
         </div>
     </aside>
 

@@ -11,14 +11,18 @@ class DoctorController extends Controller
 {
     public function index()
     {
-        // Tampilkan pasien yang sudah check-in (siap diperiksa)
+        $today = \Carbon\Carbon::today()->toDateString();
+
+        // Tampilkan pasien yang sudah check-in (siap diperiksa, hanya hari ini)
         $waitingPatients = Appointment::with(['user', 'poli'])
+                            ->whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') = ?", [$today])
                             ->where('status', 'check_in')
                             ->orderBy('id', 'asc')
                             ->get();
 
-        // Cek apakah ada pasien yang sedang "nyangkut" di status pemeriksaan
+        // Cek apakah ada pasien yang sedang "nyangkut" di status pemeriksaan (hanya hari ini)
         $activePatient = Appointment::with(['user', 'poli'])
+                            ->whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') = ?", [$today])
                             ->where('status', 'pemeriksaan')
                             ->first();
 
