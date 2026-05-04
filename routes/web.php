@@ -11,7 +11,23 @@ Route::get('/', function () {
     return view('welcome'); 
 });
 
+// =========================================================
+// KEAMANAN TINGKAT 1: POS SATPAM (LOGIN REDIRECT)
+// =========================================================
+// Wajib ada! Biar kalau ada hacker/user iseng yang belum login 
+// mau nyoba nembus URL /klinik, dia otomatis ditendang ke Filament.
+Route::get('/login', function () {
+    return redirect('/admin/login');
+})->name('login');
+
+
+// =========================================================
+// KEAMANAN TINGKAT 2: BRANKAS KLINIK (WAJIB LOGIN)
+// =========================================================
+// Semua rute di dalam grup ini sudah dilindungi middleware 'auth'.
+// Tidak ada yang bisa masuk tanpa akun Admin/Dokter/Resepsionis.
 Route::middleware(['auth'])->prefix('klinik')->group(function () {
+    
     // 1. RUTE MONITOR ANTREAN (Resepsionis)
     Route::get('/queue', [AppointmentController::class, 'queue']);
 

@@ -26,13 +26,16 @@ class AntreanDiupdate implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new Channel('klinik-channel'),
+            new Channel('antrean-channel'),
         ];
     }
 
-    // Nama "Acara Radio"-nya
-    public function broadcastAs()
+    // TUGAS 1: Menambahkan broadcastWith agar data terkirim dengan benar
+    public function broadcastWith()
     {
-        return 'antrean.berubah';
+        return [
+            'queue_number' => $this->appointment->queue_number,
+            'status' => $this->appointment->status
+        ];
     }
 }
