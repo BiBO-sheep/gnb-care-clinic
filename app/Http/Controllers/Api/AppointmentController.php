@@ -246,7 +246,10 @@ class AppointmentController extends Controller
 
     public function getActiveQueue(Request $request)
     {
+        $today = date('M d, Y'); // Format: May 06, 2026
+
         $appointment = Appointment::where('user_id', Auth::id())
+            ->whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') = STR_TO_DATE(?, '%b %d, %Y')", [$today])
             ->whereIn('status', ['scheduled', 'check_in', 'pemeriksaan'])
             ->with(['dokter', 'poli'])
             ->orderBy('tanggal', 'asc')

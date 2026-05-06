@@ -10,41 +10,13 @@ use App\Models\Invoice;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Events\AntreanDiupdate;
 
 class AppointmentController extends Controller
 {
     public function queue()
     {
-        $today = \Carbon\Carbon::today()->toDateString();
-
-        // Yang lagi di dalem ruang dokter (Status: pemeriksaan, hanya untuk hari ini)
-        $nowServing = Appointment::with(['user', 'poli', 'dokter'])
-                        ->whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') = ?", [$today])
-                        ->where('status', 'pemeriksaan')
-                        ->first();
-
-        // 1. Antrean Hari Ini (Status: scheduled)
-        $antreanHariIni = Appointment::with(['user', 'poli'])
-                        ->whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') = ?", [$today])
-                        ->where('status', 'scheduled')
-                        ->orderBy('id', 'asc')
-                        ->get();
-
-        // 2. Jadwal Mendatang (Status: scheduled)
-        $antreanMendatang = Appointment::with(['user', 'poli'])
-                        ->whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') > ?", [$today])
-                        ->where('status', 'scheduled')
-                        ->orderByRaw("STR_TO_DATE(tanggal, '%b %d, %Y') ASC")
-                        ->orderBy('id', 'asc')
-                        ->get();
-
-        $totalHariIni = Appointment::whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') = ?", [$today])->count();
-        $selesai = Appointment::whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') = ?", [$today])
-                    ->where('status', 'selesai')
-                    ->count();
-
-        return view('admin.queue', compact('nowServing', 'antreanHariIni', 'antreanMendatang', 'totalHariIni', 'selesai'));
+        // Query dipindahkan ke komponen Livewire QueueMonitor (wire:poll.3s)
+        return view('admin.queue');
     }
 
     // 1. Fungsi Panggil Pasien (Ubah status jadi check_in)
@@ -52,9 +24,6 @@ class AppointmentController extends Controller
     {
         $appointment = Appointment::findOrFail($id);
         $appointment->update(['status' => 'check_in']);
-
-        // 👇 TOA DIBUNYIKAN: Pasien Dipanggil! 👇
-        broadcast(new AntreanDiupdate($appointment));
 
         return back()->with('success', 'Pasien nomor ' . $appointment->queue_number . ' dipanggil!');
     }
@@ -64,9 +33,6 @@ class AppointmentController extends Controller
     {
         $appointment = Appointment::findOrFail($id);
         $appointment->update(['status' => 'pemeriksaan']);
-
-        // 👇 TOA DIBUNYIKAN: Pasien Masuk Ruangan! 👇
-        broadcast(new AntreanDiupdate($appointment));
 
         return redirect('/klinik/doctor')->with('success', 'Pasien sudah berada di ruang dokter.');
     }
@@ -128,9 +94,6 @@ Invoice::create([
             $appointment->update(['status' => 'selesai']);
 
             DB::commit(); // Save dulu datanya dengan aman ke Database
-
-            // 👇 TOA DIBUNYIKAN: Pemeriksaan Selesai, tagihan meluncur! 👇
-            broadcast(new AntreanDiupdate($appointment));
 
             return redirect('/klinik/queue')->with('success', 'Pemeriksaan selesai! Resep & Tagihan berhasil dikirim ke HP Pasien.');
 

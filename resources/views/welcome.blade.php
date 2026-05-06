@@ -50,7 +50,14 @@
                     <a href="#layanan" class="text-gray-600 hover:text-primary font-semibold transition">Layanan</a>
                 </div>
 
-                <div class="hidden md:flex">
+                <div class="hidden md:flex items-center gap-6">
+                    {{-- Portal Staf: Hanya muncul jika SUDAH login --}}
+                    @auth
+                        <a href="/klinik/queue" class="flex items-center gap-2 bg-primaryLight text-primary px-5 py-2.5 rounded-full font-bold border border-primary/20 hover:bg-primary hover:text-white transition-all duration-300">
+                            <i class="fa-solid fa-gauge-high"></i> Dashboard Staf
+                        </a>
+                    @endauth
+
                     <a href="#download" class="bg-primary hover:bg-[#004f54] text-white px-6 py-2.5 rounded-full font-bold shadow-lg shadow-primary/30 transition-all transform hover:-translate-y-0.5">
                         <i class="fa-brands fa-google-play mr-2"></i> Unduh Aplikasi
                     </a>
@@ -91,15 +98,16 @@
                 </div>
 
                 <div class="relative hidden md:block">
-                    <div class="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white transform rotate-2 hover:rotate-0 transition-all duration-500">
-                        <img src="https://images.unsplash.com/photo-1551076805-e166946c9eb9?q=80&w=800&auto=format&fit=crop" alt="Dokter G&B Clinic" class="w-full h-auto object-cover">
-                        <div class="absolute bottom-6 left-[-20px] bg-white p-4 rounded-2xl shadow-xl flex items-center gap-4">
-                            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600 text-xl">
+                    <div class="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white transform rotate-2 hover:rotate-0 transition-all duration-500 bg-gray-200">
+                        <img src="{{ asset('images/hero-clinic.png') }}" alt="Dokter G&B Clinic" class="w-full h-auto object-cover min-h-[400px]">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                        <div class="absolute bottom-6 left-6 right-6 bg-white/90 backdrop-blur-sm p-4 rounded-2xl shadow-xl flex items-center gap-4">
+                            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600 text-xl shadow-inner">
                                 <i class="fa-solid fa-check-double"></i>
                             </div>
                             <div>
-                                <p class="text-xs text-gray-500 font-bold">Layanan Aktif</p>
-                                <p class="text-sm font-extrabold text-gray-900">Tanpa Antre Lama</p>
+                                <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest">Layanan Aktif</p>
+                                <p class="text-sm font-extrabold text-primary">Profesional & Terpercaya</p>
                             </div>
                         </div>
                     </div>
@@ -184,9 +192,10 @@
     <footer class="bg-gray-900 text-gray-300 py-12 border-t border-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
             <div class="flex items-center gap-3 mb-4 md:mb-0">
-                <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white">
+                {{-- Pintu Rahasia Portal Staf (Logo di Footer) --}}
+                <a href="/login" class="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-gray-500 hover:text-white hover:bg-primary transition-all duration-500 cursor-default group">
                     <i class="fa-solid fa-stethoscope text-sm"></i>
-                </div>
+                </a>
                 <span class="font-bold text-lg text-white">G&B Care Clinic</span>
             </div>
             
