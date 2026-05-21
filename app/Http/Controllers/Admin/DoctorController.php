@@ -30,7 +30,7 @@ class DoctorController extends Controller
 
     public function periksa($id)
     {
-        $appointment = Appointment::with(['user', 'poli'])->findOrFail($id);
+        $appointment = Appointment::with(['user', 'poli', 'dokter'])->findOrFail($id);
         
         // Update status ke 'pemeriksaan' agar sinkron ke Flutter & Antrean Depan
         $appointment->update(['status' => 'pemeriksaan']);

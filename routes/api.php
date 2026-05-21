@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\InvoiceController;
 // Rute Publik (Tidak perlu token / Belum Login)
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/auth/google', [AuthController::class, 'googleLogin']);
 
 // Rute Terproteksi (Wajib pakai token dari login)
 Route::middleware('auth:sanctum')->group(function () {

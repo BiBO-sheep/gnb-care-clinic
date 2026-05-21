@@ -43,6 +43,7 @@ Route::middleware(['auth'])->prefix('klinik')->group(function () {
     // 4. RUTE KASIR
     Route::get('/kasir', [KasirController::class, 'index']);
     Route::post('/kasir/{id}/lunas', [KasirController::class, 'konfirmasiLunas']);
+    Route::post('/kasir/{id}/harga-obat', [KasirController::class, 'updateHargaObat']);
 
     // 5. RUTE BUKU PASIEN & REKAM MEDIS
     Route::get('/pasien', [PasienController::class, 'index']);

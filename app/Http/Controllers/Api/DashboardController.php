@@ -17,7 +17,7 @@ class DashboardController extends Controller
         $upcoming = Appointment::with(['poli', 'dokter'])
             ->where('user_id', $userId)
             ->whereIn('status', ['scheduled', 'check_in'])
-            ->orderBy('tanggal', 'asc')
+            ->orderByRaw("STR_TO_DATE(tanggal, '%b %d, %Y') asc")
             ->orderBy('jam', 'asc')
             ->first();
 

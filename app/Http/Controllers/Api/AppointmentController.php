@@ -71,7 +71,7 @@ class AppointmentController extends Controller
 
         $history = Appointment::with(['poli', 'user', 'dokter'])
             ->where('user_id', $userId)
-            ->orderBy('tanggal', 'desc')
+            ->orderByRaw("STR_TO_DATE(tanggal, '%b %d, %Y') desc")
             ->orderBy('jam', 'desc')
             ->get();
 

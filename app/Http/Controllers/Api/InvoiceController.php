@@ -13,7 +13,12 @@ class InvoiceController extends Controller
      */
     public function show($appointmentId)
     {
-        $invoice = Invoice::with(['appointment.user', 'appointment.medical_record'])
+        $invoice = Invoice::with([
+            'appointment.user', 
+            'appointment.poli',
+            'appointment.dokter',
+            'appointment.medical_record.prescriptions'
+        ])
             ->where('appointment_id', $appointmentId)
             ->first();
 
@@ -24,22 +29,64 @@ class InvoiceController extends Controller
             ], 404);
         }
 
-        // Generate a simple invoice number if it doesn't exist in DB
-        $invoiceNumber = "INV-" . str_pad($invoice->id, 6, '0', STR_PAD_LEFT);
+        $medicalRecord = $invoice->appointment->medical_record;
+        $prescriptions = $medicalRecord ? $medicalRecord->prescriptions : collect();
+
+        // Format daftar obat untuk Flutter
+        $medicines = $prescriptions->map(function ($p) {
+            return [
+                'id'            => $p->id,
+                'medicine_name' => $p->medicine_name,
+                'dosage'        => $p->dosage,
+                'rules'         => $p->rules,
+                'price'         => (int) $p->price,
+            ];
+        })->values();
+
+        // Tentukan status yang tampil di Flutter
+        // pending_kasir = dokter sudah isi resep, kasir belum input harga
+        // unpaid tapi semua obat masih harga 0 = juga dianggap pending
+        $status = $invoice->status;
+        $allMedicinesPriced = $prescriptions->isNotEmpty() 
+            ? $prescriptions->every(fn($p) => $p->price > 0)
+            : true; // Kalau tidak ada resep, tidak perlu harga obat
+
+        if ($status === 'pending_kasir' || ($status === 'unpaid' && $prescriptions->isNotEmpty() && !$allMedicinesPriced)) {
+            $displayStatus = 'pending'; // Kasir belum selesai input harga
+        } else {
+            $displayStatus = $status; // 'unpaid' (siap bayar) atau 'paid'
+        }
 
         return response()->json([
             'success' => true,
             'data' => [
-                'id' => $invoice->id,
-                'invoice_number' => $invoiceNumber,
-                'status' => $invoice->status,
-                'consultation_fee' => (int) $invoice->total_consultation,
-                'medicine_fee' => (int) $invoice->total_medicines,
-                'grand_total' => (int) $invoice->grand_total,
-                'diagnosis' => $invoice->appointment->medical_record->diagnosis ?? '-',
-                'patient_name' => $invoice->appointment->user->name ?? 'Pasien',
-                'clinic_name' => 'G&B Care Clinic',
-                'medicines' => [] // Prescriptions can be added here if needed later
+                'id'                => $invoice->id,
+                'invoice_number'    => 'INV-' . str_pad($invoice->id, 6, '0', STR_PAD_LEFT),
+                'status'            => $displayStatus,
+                'total_consultation'=> (int) $invoice->total_consultation,
+                'total_medicines'   => (int) $invoice->total_medicines,
+                'grand_total'       => (int) $invoice->grand_total,
+                'appointment'       => [
+                    'id'            => $invoice->appointment->id,
+                    'queue_number'  => $invoice->appointment->queue_number,
+                    'tanggal'       => $invoice->appointment->tanggal,
+                    'poli'          => [
+                        'name'      => $invoice->appointment->poli->name ?? '-',
+                        'ruangan'   => $invoice->appointment->poli->ruangan ?? '-',
+                    ],
+                    'user'          => [
+                        'name'      => $invoice->appointment->user->name ?? 'Pasien',
+                    ],
+                    'dokter'        => [
+                        'name'      => $invoice->appointment->dokter->name ?? 'Dokter',
+                    ],
+                    'medical_record' => $medicalRecord ? [
+                        'diagnosis'     => $medicalRecord->diagnosis ?? '-',
+                        'treatment_plan'=> $medicalRecord->treatment_plan ?? '-',
+                        'doctor_notes'  => $medicalRecord->doctor_notes ?? '-',
+                    ] : null,
+                ],
+                'medicines'         => $medicines,
             ]
         ]);
     }

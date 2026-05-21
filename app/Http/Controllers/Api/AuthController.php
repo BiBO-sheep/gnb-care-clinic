@@ -78,4 +78,43 @@ class AuthController extends Controller
             'message' => 'Logout berhasil'
         ]);
     }
+
+    public function googleLogin(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'name' => 'required|string',
+            'google_id' => 'required|string'
+        ]);
+
+        // Cari user berdasarkan email
+        $user = User::where('email', $request->email)->first();
+
+        if ($user) {
+            // Jika user ada, update google_id jika masih kosong
+            if (empty($user->google_id)) {
+                $user->update(['google_id' => $request->google_id]);
+            }
+        } else {
+            // Jika user tidak ada, buat baru
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'google_id' => $request->google_id,
+                'password' => Hash::make(\Illuminate\Support\Str::random(16)),
+                'role' => 'patient', // Default role untuk login Google
+            ]);
+        }
+
+        // Buat token Sanctum
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Login Google berhasil',
+            'data' => $user,
+            'access_token' => $token,
+            'token_type' => 'Bearer'
+        ]);
+    }
 }
