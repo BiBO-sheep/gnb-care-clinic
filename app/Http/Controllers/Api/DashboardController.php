@@ -16,7 +16,8 @@ class DashboardController extends Controller
         // 1. Fetch Upcoming Appointment (Yang terdekat)
         $upcoming = Appointment::with(['poli', 'dokter'])
             ->where('user_id', $userId)
-            ->whereIn('status', ['scheduled', 'check_in'])
+            ->whereNotIn('status', ['completed', 'selesai', 'cancelled', 'batal'])
+            ->whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') >= CURDATE()")
             ->orderByRaw("STR_TO_DATE(tanggal, '%b %d, %Y') asc")
             ->orderBy('jam', 'asc')
             ->first();

@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -22,10 +23,14 @@
                         body: ['"Be Vietnam Pro"', 'sans-serif'],
                     },
                     colors: {
-                        primary: '#006A6A',
-                        primaryLight: '#E0F7F7',
-                        secondary: '#FF7F50',
+                        primary: '#0B2B5E',
+                        primaryLight: '#E6F0FA',
+                        secondary: '#4A90E2',
                         dark: '#121212',
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(11, 43, 94, 0.08)',
+                        'glass': '0 8px 32px 0 rgba(11, 43, 94, 0.05)',
                     }
                 }
             }
@@ -34,7 +39,7 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans selection:bg-primary selection:text-white">
 
-    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm transition-all">
+    <nav class="fixed w-full z-50 bg-white/70 backdrop-blur-xl border-b border-white/50 shadow-glass transition-all">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <div class="flex items-center gap-3 cursor-pointer">
@@ -68,8 +73,8 @@
 
     <section id="beranda" class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
         <div class="absolute inset-0 z-0">
-            <div class="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full bg-primaryLight opacity-50 blur-3xl"></div>
-            <div class="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] rounded-full bg-orange-100 opacity-50 blur-3xl"></div>
+            <div class="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full bg-primaryLight opacity-60 blur-3xl"></div>
+            <div class="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] rounded-full bg-secondary opacity-10 blur-3xl"></div>
         </div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -116,40 +121,90 @@
         </div>
     </section>
 
+    <section id="dokter" class="py-20 bg-gray-50 border-y border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">Tim Dokter <span class="text-primary">Terbaik Kami</span></h2>
+                <p class="text-gray-500 font-body max-w-2xl mx-auto">Ditangani langsung oleh tenaga medis profesional dan berpengalaman di bidangnya.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Dokter 1 -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow-soft border border-gray-100 hover:-translate-y-2 transition-transform duration-300 group" data-aos="fade-up" data-aos-delay="100">
+                    <div class="h-64 bg-primaryLight overflow-hidden relative">
+                        <img src="https://ui-avatars.com/api/?name=Dr+Andi&background=E6F0FA&color=0B2B5E&size=256" alt="Dr. Andi" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-gray-900 mb-1">dr. Andi Saputra, Sp.PD</h3>
+                        <p class="text-secondary font-bold text-sm mb-4">Spesialis Penyakit Dalam</p>
+                        <p class="text-gray-500 text-sm mb-6">Berpengalaman lebih dari 10 tahun menangani berbagai kasus penyakit dalam kompleks.</p>
+                        <a href="#download" class="inline-block w-full py-3 rounded-xl bg-primaryLight text-primary font-bold hover:bg-primary hover:text-white transition-colors">Buat Janji</a>
+                    </div>
+                </div>
+
+                <!-- Dokter 2 -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow-soft border border-gray-100 hover:-translate-y-2 transition-transform duration-300 group" data-aos="fade-up" data-aos-delay="200">
+                    <div class="h-64 bg-primaryLight overflow-hidden relative">
+                        <img src="https://ui-avatars.com/api/?name=Dr+Sarah&background=E6F0FA&color=0B2B5E&size=256" alt="Dr. Sarah" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-gray-900 mb-1">dr. Sarah Wijaya, Sp.A</h3>
+                        <p class="text-secondary font-bold text-sm mb-4">Spesialis Anak</p>
+                        <p class="text-gray-500 text-sm mb-6">Fokus pada tumbuh kembang anak dan penanganan penyakit pada bayi dan balita.</p>
+                        <a href="#download" class="inline-block w-full py-3 rounded-xl bg-primaryLight text-primary font-bold hover:bg-primary hover:text-white transition-colors">Buat Janji</a>
+                    </div>
+                </div>
+
+                <!-- Dokter 3 -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow-soft border border-gray-100 hover:-translate-y-2 transition-transform duration-300 group" data-aos="fade-up" data-aos-delay="300">
+                    <div class="h-64 bg-primaryLight overflow-hidden relative">
+                        <img src="https://ui-avatars.com/api/?name=Dr+Budi&background=E6F0FA&color=0B2B5E&size=256" alt="Dr. Budi" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-gray-900 mb-1">dr. Budi Santoso</h3>
+                        <p class="text-secondary font-bold text-sm mb-4">Dokter Umum</p>
+                        <p class="text-gray-500 text-sm mb-6">Siap melayani keluhan kesehatan umum dan konsultasi medis pertama keluarga Anda.</p>
+                        <a href="#download" class="inline-block w-full py-3 rounded-xl bg-primaryLight text-primary font-bold hover:bg-primary hover:text-white transition-colors">Buat Janji</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section id="keunggulan" class="py-20 bg-white border-y border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
+            <div class="text-center mb-16" data-aos="fade-up">
                 <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">Mengapa Memilih <span class="text-primary">G&B Care?</span></h2>
                 <p class="text-gray-500 font-body max-w-2xl mx-auto">Kami menggabungkan pelayanan medis profesional dengan teknologi canggih untuk memberikan pengalaman berobat yang nyaman dan transparan.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="p-8 rounded-3xl bg-gray-50 hover:bg-white border border-gray-100 hover:border-primary/20 hover:shadow-xl transition-all duration-300 group">
-                    <div class="w-14 h-14 bg-primaryLight rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <div class="p-8 rounded-3xl bg-white/80 backdrop-blur-md hover:bg-white border border-white/50 hover:border-primary/20 hover:shadow-soft transition-all duration-300 group shadow-glass" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-14 h-14 bg-primaryLight rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm">
                         <i class="fa-solid fa-calendar-check text-2xl text-primary"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3 text-gray-900">Booking Digital</h3>
                     <p class="text-gray-500 font-body text-sm leading-relaxed">Atur jadwal konsultasi dengan dokter pilihan Anda kapan saja, langsung dari aplikasi.</p>
                 </div>
 
-                <div class="p-8 rounded-3xl bg-gray-50 hover:bg-white border border-gray-100 hover:border-secondary/20 hover:shadow-xl transition-all duration-300 group">
-                    <div class="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <div class="p-8 rounded-3xl bg-white/80 backdrop-blur-md hover:bg-white border border-white/50 hover:border-secondary/20 hover:shadow-soft transition-all duration-300 group shadow-glass" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm">
                         <i class="fa-solid fa-users-viewfinder text-2xl text-secondary"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3 text-gray-900">Live Queue Monitor</h3>
                     <p class="text-gray-500 font-body text-sm leading-relaxed">Pantau nomor antrean secara real-time. Tidak perlu lagi menunggu berjam-jam di ruang tunggu klinik.</p>
                 </div>
 
-                <div class="p-8 rounded-3xl bg-gray-50 hover:bg-white border border-gray-100 hover:border-primary/20 hover:shadow-xl transition-all duration-300 group">
-                    <div class="w-14 h-14 bg-primaryLight rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <div class="p-8 rounded-3xl bg-white/80 backdrop-blur-md hover:bg-white border border-white/50 hover:border-primary/20 hover:shadow-soft transition-all duration-300 group shadow-glass" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-14 h-14 bg-primaryLight rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm">
                         <i class="fa-solid fa-file-prescription text-2xl text-primary"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3 text-gray-900">Resep Digital Terintegrasi</h3>
                     <p class="text-gray-500 font-body text-sm leading-relaxed">Terima catatan diagnosis dan resep obat secara digital. Langsung terhubung ke bagian Farmasi.</p>
                 </div>
 
-                <div class="p-8 rounded-3xl bg-gray-50 hover:bg-white border border-gray-100 hover:border-secondary/20 hover:shadow-xl transition-all duration-300 group">
-                    <div class="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <div class="p-8 rounded-3xl bg-white/80 backdrop-blur-md hover:bg-white border border-white/50 hover:border-secondary/20 hover:shadow-soft transition-all duration-300 group shadow-glass" data-aos="fade-up" data-aos-delay="400">
+                    <div class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm">
                         <i class="fa-solid fa-credit-card text-2xl text-secondary"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3 text-gray-900">Pembayaran Mudah</h3>
@@ -160,7 +215,7 @@
     </section>
 
     <section id="download" class="py-20 relative overflow-hidden">
-        <div class="absolute inset-0 bg-primary z-0"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-primary to-secondary z-0"></div>
         <div class="absolute inset-0 z-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
 
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
@@ -206,7 +261,14 @@
         </div>
     </footer>
 
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 50,
+        });
+        
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();

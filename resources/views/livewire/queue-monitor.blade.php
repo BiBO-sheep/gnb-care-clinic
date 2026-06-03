@@ -157,7 +157,6 @@
                 </table>
             </div>
         </div>
-
     </div>
 
     {{-- SIDEBAR: Ringkasan Hari Ini --}}
