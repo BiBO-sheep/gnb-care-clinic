@@ -8,33 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                        body: ['"Be Vietnam Pro"', 'sans-serif'],
-                    },
-                    colors: {
-                        primary: '#0B2B5E',
-                        primaryLight: '#E6F0FA',
-                        secondary: '#4A90E2',
-                        dark: '#121212',
-                        background: '#F8FAFC', 
-                    },
-                    boxShadow: {
-                        'soft': '0 10px 40px -10px rgba(11, 43, 94, 0.08)',
-                        'glass': '0 8px 32px 0 rgba(11, 43, 94, 0.05)',
-                    }
-                }
-            }
-        }
-    </script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-background font-sans text-gray-800 flex h-screen overflow-hidden">
 
@@ -53,21 +28,25 @@
 
             <p class="px-2 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Menu Utama</p>
             
-            <a href="/klinik/queue" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/queue*') ? 'bg-primaryLight text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
+            <a href="/klinik/dashboard" class="flex items-center px-4 py-3 mb-2 rounded-xl transition-all {{ request()->is('klinik/dashboard*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
+                <i class="fa-solid fa-chart-line w-6 text-center mr-2"></i> Dashboard
+            </a>
+
+            <a href="/klinik/queue" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/queue*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
                 <i class="fa-solid fa-list-ol w-6 text-center mr-2"></i> Monitor Antrean
             </a>
 
-            <a href="/klinik/pasien" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/pasien*') ? 'bg-primaryLight text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
+            <a href="/klinik/pasien" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/pasien*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
                 <i class="fa-solid fa-address-book w-6 text-center mr-2"></i> Buku Pasien
             </a>
 
             <p class="px-2 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 mt-6">Medis & Kasir</p>
             
-            <a href="/klinik/doctor" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/doctor*') ? 'bg-primaryLight text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
+            <a href="/klinik/doctor" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/doctor*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
                 <i class="fa-solid fa-user-doctor w-6 text-center mr-2"></i> Ruang Dokter
             </a>
 
-            <a href="/klinik/kasir" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/kasir*') ? 'bg-primaryLight text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
+            <a href="/klinik/kasir" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/kasir*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
                 <i class="fa-solid fa-cash-register w-6 text-center mr-2"></i> Pembayaran
             </a>
 

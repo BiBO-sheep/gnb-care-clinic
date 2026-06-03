@@ -4,39 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>G&B Care Clinic - Solusi Kesehatan Digital Anda</title>
-    
+    <meta name="description" content="G&B Care Clinic - Klinik digital modern dengan booking online, pantau antrean real-time, dan resep digital terintegrasi.">
+
+    {{-- Google Fonts dengan font-display:swap (tidak blocking render) --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript><link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"></noscript>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                        body: ['"Be Vietnam Pro"', 'sans-serif'],
-                    },
-                    colors: {
-                        primary: '#0B2B5E',
-                        primaryLight: '#E6F0FA',
-                        secondary: '#4A90E2',
-                        dark: '#121212',
-                    },
-                    boxShadow: {
-                        'soft': '0 10px 40px -10px rgba(11, 43, 94, 0.08)',
-                        'glass': '0 8px 32px 0 rgba(11, 43, 94, 0.05)',
-                    }
-                }
-            }
-        }
-    </script>
+    {{-- Semua CSS & JS (FontAwesome, AOS, Tailwind) sudah dibundel via Vite --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans selection:bg-primary selection:text-white">
 
@@ -59,12 +35,12 @@
                 <div class="hidden md:flex items-center gap-6">
                     {{-- Portal Staf: Hanya muncul jika SUDAH login --}}
                     @auth
-                        <a href="/klinik/queue" class="flex items-center gap-2 bg-primaryLight text-primary px-5 py-2.5 rounded-full font-bold border border-primary/20 hover:bg-primary hover:text-white transition-all duration-300">
+                        <a href="/klinik/queue" class="flex items-center gap-2 bg-primary-light text-primary px-5 py-2.5 rounded-full font-bold border border-primary/20 hover:bg-primary hover:text-white transition-all duration-300">
                             <i class="fa-solid fa-gauge-high"></i> Dashboard Staf
                         </a>
                     @endauth
 
-                    <a href="#download" class="bg-primary hover:bg-[#004f54] text-white px-6 py-2.5 rounded-full font-bold shadow-lg shadow-primary/30 transition-all transform hover:-translate-y-0.5">
+                    <a href="#download" class="bg-primary hover:bg-[#0a2450] text-white px-6 py-2.5 rounded-full font-bold shadow-lg shadow-primary/30 transition-all transform hover:-translate-y-0.5">
                         <i class="fa-brands fa-google-play mr-2"></i> Unduh Aplikasi
                     </a>
                 </div>
@@ -74,14 +50,14 @@
 
     <section id="beranda" class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
         <div class="absolute inset-0 z-0">
-            <div class="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full bg-primaryLight opacity-60 blur-3xl"></div>
+            <div class="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full bg-primary-light opacity-60 blur-3xl"></div>
             <div class="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] rounded-full bg-secondary opacity-10 blur-3xl"></div>
         </div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div class="text-center lg:text-left">
-                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primaryLight text-primary font-bold text-sm mb-6 border border-primary/20">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-light text-primary font-bold text-sm mb-6 border border-primary/20">
                         <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
                         Klinik Digital Modern
                     </div>
@@ -94,7 +70,7 @@
                     </p>
                     
                     <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                        <a href="#download" class="bg-primary hover:bg-[#004f54] text-white px-8 py-4 rounded-full font-bold shadow-xl shadow-primary/30 transition-all flex items-center justify-center gap-2">
+                        <a href="#download" class="bg-primary hover:bg-[#0a2450] text-white px-8 py-4 rounded-full font-bold shadow-xl shadow-primary/30 transition-all flex items-center justify-center gap-2">
                             <i class="fa-solid fa-mobile-screen"></i> Gunakan Aplikasi
                         </a>
                         <a href="#keunggulan" class="bg-white hover:bg-gray-50 text-gray-800 border border-gray-200 px-8 py-4 rounded-full font-bold shadow-sm transition-all flex items-center justify-center gap-2">
@@ -104,11 +80,11 @@
                 </div>
 
                 <div class="relative hidden md:block">
-                    <div class="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white transform rotate-2 hover:rotate-0 transition-all duration-500 bg-gray-200">
+                    <div class="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white transform rotate-2 hover:rotate-0 transition-all duration-500 bg-gray-200" style="min-height:400px;">
                         <img src="{{ asset('images/hero-clinic.png') }}" alt="Dokter G&B Clinic" width="576" height="576" fetchpriority="high" loading="eager" class="w-full h-auto object-cover min-h-[400px]">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
                         <div class="absolute bottom-6 left-6 right-6 bg-white/90 backdrop-blur-sm p-4 rounded-2xl shadow-xl flex items-center gap-4">
-                            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600 text-xl shadow-inner">
+                            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600 text-xl shadow-inner flex-shrink-0">
                                 <i class="fa-solid fa-check-double"></i>
                             </div>
                             <div>
@@ -132,40 +108,40 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Dokter 1 -->
                 <div class="bg-white rounded-3xl overflow-hidden shadow-soft border border-gray-100 hover:-translate-y-2 transition-transform duration-300 group" data-aos="fade-up" data-aos-delay="100">
-                    <div class="h-64 bg-primaryLight overflow-hidden relative">
+                    <div class="h-64 bg-primary-light overflow-hidden relative">
                         <img src="https://ui-avatars.com/api/?name=Dr+Andi&background=E6F0FA&color=0B2B5E&size=256" alt="Dr. Andi" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     </div>
                     <div class="p-6 text-center">
                         <h3 class="text-xl font-bold text-gray-900 mb-1">dr. Andi Saputra, Sp.PD</h3>
                         <p class="text-secondary font-bold text-sm mb-4">Spesialis Penyakit Dalam</p>
                         <p class="text-gray-500 text-sm mb-6">Berpengalaman lebih dari 10 tahun menangani berbagai kasus penyakit dalam kompleks.</p>
-                        <a href="#download" class="inline-block w-full py-3 rounded-xl bg-primaryLight text-primary font-bold hover:bg-primary hover:text-white transition-colors">Buat Janji</a>
+                        <a href="#download" class="inline-block w-full py-3 rounded-xl bg-primary-light text-primary font-bold hover:bg-primary hover:text-white transition-colors">Buat Janji</a>
                     </div>
                 </div>
 
                 <!-- Dokter 2 -->
                 <div class="bg-white rounded-3xl overflow-hidden shadow-soft border border-gray-100 hover:-translate-y-2 transition-transform duration-300 group" data-aos="fade-up" data-aos-delay="200">
-                    <div class="h-64 bg-primaryLight overflow-hidden relative">
+                    <div class="h-64 bg-primary-light overflow-hidden relative">
                         <img src="https://ui-avatars.com/api/?name=Dr+Sarah&background=E6F0FA&color=0B2B5E&size=256" alt="Dr. Sarah" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     </div>
                     <div class="p-6 text-center">
                         <h3 class="text-xl font-bold text-gray-900 mb-1">dr. Sarah Wijaya, Sp.A</h3>
                         <p class="text-secondary font-bold text-sm mb-4">Spesialis Anak</p>
                         <p class="text-gray-500 text-sm mb-6">Fokus pada tumbuh kembang anak dan penanganan penyakit pada bayi dan balita.</p>
-                        <a href="#download" class="inline-block w-full py-3 rounded-xl bg-primaryLight text-primary font-bold hover:bg-primary hover:text-white transition-colors">Buat Janji</a>
+                        <a href="#download" class="inline-block w-full py-3 rounded-xl bg-primary-light text-primary font-bold hover:bg-primary hover:text-white transition-colors">Buat Janji</a>
                     </div>
                 </div>
 
                 <!-- Dokter 3 -->
                 <div class="bg-white rounded-3xl overflow-hidden shadow-soft border border-gray-100 hover:-translate-y-2 transition-transform duration-300 group" data-aos="fade-up" data-aos-delay="300">
-                    <div class="h-64 bg-primaryLight overflow-hidden relative">
+                    <div class="h-64 bg-primary-light overflow-hidden relative">
                         <img src="https://ui-avatars.com/api/?name=Dr+Budi&background=E6F0FA&color=0B2B5E&size=256" alt="Dr. Budi" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     </div>
                     <div class="p-6 text-center">
                         <h3 class="text-xl font-bold text-gray-900 mb-1">dr. Budi Santoso</h3>
                         <p class="text-secondary font-bold text-sm mb-4">Dokter Umum</p>
                         <p class="text-gray-500 text-sm mb-6">Siap melayani keluhan kesehatan umum dan konsultasi medis pertama keluarga Anda.</p>
-                        <a href="#download" class="inline-block w-full py-3 rounded-xl bg-primaryLight text-primary font-bold hover:bg-primary hover:text-white transition-colors">Buat Janji</a>
+                        <a href="#download" class="inline-block w-full py-3 rounded-xl bg-primary-light text-primary font-bold hover:bg-primary hover:text-white transition-colors">Buat Janji</a>
                     </div>
                 </div>
             </div>
@@ -181,7 +157,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div class="p-8 rounded-3xl bg-white/80 backdrop-blur-md hover:bg-white border border-white/50 hover:border-primary/20 hover:shadow-soft transition-all duration-300 group shadow-glass" data-aos="fade-up" data-aos-delay="100">
-                    <div class="w-14 h-14 bg-primaryLight rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm">
+                    <div class="w-14 h-14 bg-primary-light rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm">
                         <i class="fa-solid fa-calendar-check text-2xl text-primary"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3 text-gray-900">Booking Digital</h3>
@@ -197,7 +173,7 @@
                 </div>
 
                 <div class="p-8 rounded-3xl bg-white/80 backdrop-blur-md hover:bg-white border border-white/50 hover:border-primary/20 hover:shadow-soft transition-all duration-300 group shadow-glass" data-aos="fade-up" data-aos-delay="300">
-                    <div class="w-14 h-14 bg-primaryLight rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm">
+                    <div class="w-14 h-14 bg-primary-light rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm">
                         <i class="fa-solid fa-file-prescription text-2xl text-primary"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3 text-gray-900">Resep Digital Terintegrasi</h3>
@@ -217,11 +193,11 @@
 
     <section id="download" class="py-20 relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-br from-primary to-secondary z-0"></div>
-        <div class="absolute inset-0 z-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+        <div class="absolute inset-0 z-0 opacity-5" style="background-image: radial-gradient(circle, rgba(255,255,255,0.3) 1px, transparent 1px); background-size: 24px 24px;"></div>
 
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
             <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-6">Siap Memulai Perjalanan Sehat Anda?</h2>
-            <p class="text-primaryLight font-body text-lg mb-10 max-w-2xl mx-auto">
+            <p class="text-blue-100 font-body text-lg mb-10 max-w-2xl mx-auto">
                 Dapatkan akses penuh ke layanan kesehatan G&B Care Clinic dalam satu genggaman. Unduh aplikasi kami sekarang juga. Gratis!
             </p>
             
@@ -255,29 +231,12 @@
                 <span class="font-bold text-lg text-white">G&B Care Clinic</span>
             </div>
             
-            <p class="text-sm font-body text-gray-500 text-center md:text-left">
+            <p class="text-sm font-body text-gray-400 text-center md:text-left">
                 &copy; 2026 G&B Care Clinic. Hak Cipta Dilindungi.<br>
-                Sistem Terintegrasi Flutter & Laravel.
+                <span class="text-gray-500">Sistem Terintegrasi Flutter & Laravel.</span>
             </p>
         </div>
     </footer>
 
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-        AOS.init({
-            duration: 800,
-            once: true,
-            offset: 50,
-        });
-        
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-    </script>
 </body>
 </html>

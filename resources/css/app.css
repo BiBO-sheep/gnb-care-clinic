@@ -1,4 +1,6 @@
 @import 'tailwindcss';
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+@import 'aos/dist/aos.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -8,12 +10,13 @@
 @theme {
     --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-body: "Be Vietnam Pro", ui-sans-serif, system-ui, sans-serif;
-    
+
     --color-primary: #0B2B5E;
-    --color-primaryLight: #E6F0FA;
+    --color-primary-light: #E6F0FA;
     --color-secondary: #4A90E2;
     --color-dark: #121212;
-    
+    --color-background: #F8FAFC;
+
     --shadow-soft: 0 10px 40px -10px rgba(11, 43, 94, 0.08);
     --shadow-glass: 0 8px 32px 0 rgba(11, 43, 94, 0.05);
 }

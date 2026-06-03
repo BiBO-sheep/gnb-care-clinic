@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AppointmentController;
 use App\Http\Controllers\Admin\KasirController;
 use App\Http\Controllers\Admin\DoctorController;
 use App\Http\Controllers\Admin\PasienController;
+use App\Http\Controllers\Admin\DashboardController;
 
 Route::get('/', function () {
     return view('welcome'); 
@@ -28,6 +29,9 @@ Route::get('/login', function () {
 // Tidak ada yang bisa masuk tanpa akun Admin/Dokter/Resepsionis.
 Route::middleware(['auth'])->prefix('klinik')->group(function () {
     
+    // 0. DASHBOARD ANALYTICS
+    Route::get('/dashboard', [DashboardController::class, 'index']);
+
     // 1. RUTE MONITOR ANTREAN (Resepsionis)
     Route::get('/queue', [AppointmentController::class, 'queue']);
 
