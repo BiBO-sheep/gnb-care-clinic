@@ -1,0 +1,31 @@
+gnb-care-clinic/
+├── app/
+│   ├── Http/
+│   │   └── Controllers/
+│   │       └── Admin/
+│   │           ├── AppointmentController.php
+│   │           ├── DoctorController.php
+│   │           ├── KasirController.php
+│   │           └── PasienController.php
+│   └── Models/
+│       ├── Appointment.php
+│       ├── Invoice.php
+│       ├── JadwalDokter.php
+│       ├── MedicalRecord.php
+│       ├── Obat.php
+│       ├── Pemeriksaan.php
+│       ├── Poli.php
+│       ├── Prescription.php
+│       ├── Resep.php
+│       ├── Transaksi.php
+│       └── User.php
+├── resources/
+│   └── views/
+│       └── admin/
+│           ├── doctor/
+│           ├── pasien/
+│           ├── kasir.blade.php
+│           └── queue.blade.php
+└── routes/
+    ├── api.php
+    └── web.php
