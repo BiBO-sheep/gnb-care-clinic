@@ -14,29 +14,29 @@ class QueueMonitor extends Component
 
         // Yang sedang di ruang dokter atau sedang dipanggil (Status: pemeriksaan, check_in)
         $nowServing = Appointment::with(['user', 'poli', 'dokter'])
-                        ->whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') = ?", [$today])
+                        ->where('tanggal', $today)
                         ->whereIn('status', ['pemeriksaan', 'check_in'])
                         ->orderByRaw("CASE WHEN status = 'check_in' THEN 1 ELSE 2 END")
                         ->first();
 
         // 1. Antrean Hari Ini (Status: scheduled)
         $antreanHariIni = Appointment::with(['user', 'poli'])
-                        ->whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') = ?", [$today])
+                        ->where('tanggal', $today)
                         ->where('status', 'scheduled')
                         ->orderBy('id', 'asc')
                         ->get();
 
         // 2. Jadwal Mendatang (Status: scheduled)
         $antreanMendatang = Appointment::with(['user', 'poli'])
-                        ->whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') > ?", [$today])
+                        ->where('tanggal', '>', $today)
                         ->where('status', 'scheduled')
-                        ->orderByRaw("STR_TO_DATE(tanggal, '%b %d, %Y') ASC")
+                        ->orderBy('tanggal', 'asc')
                         ->orderBy('id', 'asc')
                         ->get();
 
-        $totalHariIni = Appointment::whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') = ?", [$today])->count();
+        $totalHariIni = Appointment::where('tanggal', $today)->count();
 
-        $selesai = Appointment::whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') = ?", [$today])
+        $selesai = Appointment::where('tanggal', $today)
                     ->where('status', 'selesai')
                     ->count();
 

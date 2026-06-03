@@ -14,14 +14,14 @@ class DoctorController extends Controller
 
         // Tampilkan pasien yang sudah check-in (siap diperiksa, hanya hari ini)
         $waitingPatients = Appointment::with(['user', 'poli'])
-                            ->whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') = ?", [$today])
+                            ->where('tanggal', $today)
                             ->where('status', 'check_in')
                             ->orderBy('id', 'asc')
                             ->get();
 
         // Cek apakah ada pasien yang sedang "nyangkut" di status pemeriksaan (hanya hari ini)
         $activePatient = Appointment::with(['user', 'poli'])
-                            ->whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') = ?", [$today])
+                            ->where('tanggal', $today)
                             ->where('status', 'pemeriksaan')
                             ->first();
 

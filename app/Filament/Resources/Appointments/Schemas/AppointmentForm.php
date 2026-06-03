@@ -18,17 +18,17 @@ class AppointmentForm
             ->schema([
                 Select::make('user_id')
                     ->label('Pasien')
-                    ->options(User::where('role', 'pasien')->pluck('name', 'id'))
+                    ->relationship('user', 'name', modifyQueryUsing: fn ($query) => $query->where('role', 'pasien'))
                     ->searchable()
                     ->required(),
                 Select::make('poli_id')
                     ->label('Poli')
-                    ->options(Poli::pluck('nama', 'id'))
+                    ->relationship('poli', 'nama')
                     ->searchable()
                     ->required(),
                 Select::make('dokter_id')
                     ->label('Dokter')
-                    ->options(User::where('role', 'dokter')->pluck('name', 'id'))
+                    ->relationship('dokter', 'name', modifyQueryUsing: fn ($query) => $query->where('role', 'dokter'))
                     ->searchable()
                     ->nullable(),
                 TextInput::make('queue_number')

@@ -10,32 +10,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"></noscript>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                        body: ['"Be Vietnam Pro"', 'sans-serif'],
-                    },
-                    colors: {
-                        primary: '#0B2B5E',
-                        primaryLight: '#E6F0FA',
-                        secondary: '#4A90E2',
-                        dark: '#121212',
-                    },
-                    boxShadow: {
-                        'soft': '0 10px 40px -10px rgba(11, 43, 94, 0.08)',
-                        'glass': '0 8px 32px 0 rgba(11, 43, 94, 0.05)',
-                    }
-                }
-            }
-        }
-    </script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans selection:bg-primary selection:text-white">
 
@@ -104,7 +82,7 @@
 
                 <div class="relative hidden md:block">
                     <div class="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white transform rotate-2 hover:rotate-0 transition-all duration-500 bg-gray-200">
-                        <img src="{{ asset('images/hero-clinic.png') }}" alt="Dokter G&B Clinic" class="w-full h-auto object-cover min-h-[400px]">
+                        <img src="{{ asset('images/hero-clinic.png') }}" alt="Dokter G&B Clinic" width="576" height="576" fetchpriority="high" loading="eager" class="w-full h-auto object-cover min-h-[400px]">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
                         <div class="absolute bottom-6 left-6 right-6 bg-white/90 backdrop-blur-sm p-4 rounded-2xl shadow-xl flex items-center gap-4">
                             <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600 text-xl shadow-inner">
