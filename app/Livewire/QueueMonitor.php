@@ -10,33 +10,34 @@ class QueueMonitor extends Component
 {
     public function render()
     {
-        $today = Carbon::today()->toDateString();
+        $today = Carbon::today()->format('M j, Y');  // Format: "Jun 3, 2026" sesuai format DB
+        $todayDate = Carbon::today()->toDateString();  // Format: "2026-06-03" untuk perbandingan >
 
         // Yang sedang di ruang dokter atau sedang dipanggil (Status: pemeriksaan, check_in)
         $nowServing = Appointment::with(['user', 'poli', 'dokter'])
-                        ->where('tanggal', $today)
+                        ->whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$todayDate])
                         ->whereIn('status', ['pemeriksaan', 'check_in'])
                         ->orderByRaw("CASE WHEN status = 'check_in' THEN 1 ELSE 2 END")
                         ->first();
 
         // 1. Antrean Hari Ini (Status: scheduled)
         $antreanHariIni = Appointment::with(['user', 'poli'])
-                        ->where('tanggal', $today)
+                        ->whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$todayDate])
                         ->where('status', 'scheduled')
                         ->orderBy('id', 'asc')
                         ->get();
 
         // 2. Jadwal Mendatang (Status: scheduled)
         $antreanMendatang = Appointment::with(['user', 'poli'])
-                        ->where('tanggal', '>', $today)
+                        ->whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') > ?", [$todayDate])
                         ->where('status', 'scheduled')
-                        ->orderBy('tanggal', 'asc')
+                        ->orderByRaw("STR_TO_DATE(tanggal, '%b %e, %Y') ASC")
                         ->orderBy('id', 'asc')
                         ->get();
 
-        $totalHariIni = Appointment::where('tanggal', $today)->count();
+        $totalHariIni = Appointment::whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$todayDate])->count();
 
-        $selesai = Appointment::where('tanggal', $today)
+        $selesai = Appointment::whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$todayDate])
                     ->where('status', 'selesai')
                     ->count();
 
