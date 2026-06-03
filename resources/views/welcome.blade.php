@@ -11,8 +11,33 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
 
-    {{-- Semua CSS & JS (FontAwesome, AOS, Tailwind) sudah dibundel via Vite --}}
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        body: ['"Be Vietnam Pro"', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#0B2B5E',
+                        'primary-light': '#E6F0FA',
+                        secondary: '#4A90E2',
+                        dark: '#121212',
+                        background: '#F8FAFC', 
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(11, 43, 94, 0.08)',
+                        'glass': '0 8px 32px 0 rgba(11, 43, 94, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans selection:bg-primary selection:text-white">
 
@@ -238,5 +263,25 @@
         </div>
     </footer>
 
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 50,
+        });
+        
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>

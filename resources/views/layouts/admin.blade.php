@@ -9,7 +9,31 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        body: ['"Be Vietnam Pro"', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#0B2B5E',
+                        'primary-light': '#E6F0FA',
+                        secondary: '#4A90E2',
+                        dark: '#121212',
+                        background: '#F8FAFC', 
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(11, 43, 94, 0.08)',
+                        'glass': '0 8px 32px 0 rgba(11, 43, 94, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
 </head>
 <body class="bg-background font-sans text-gray-800 flex h-screen overflow-hidden">
 
