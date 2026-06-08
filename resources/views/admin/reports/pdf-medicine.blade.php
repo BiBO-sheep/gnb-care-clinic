@@ -21,7 +21,7 @@
     <div class="header">
         <h1>G&B Care Clinic</h1>
         <p>Laporan Rekap Obat Keluar Terjual</p>
-        <p>Tanggal Cetak: {{ \Carbon\Carbon::now()->format('d M Y H:i') }}</p>
+        <p>Periode: {{ \Carbon\Carbon::parse($filterMonth)->translatedFormat('F Y') }} | Tanggal Cetak: {{ \Carbon\Carbon::now()->format('d M Y H:i') }}</p>
     </div>
 
     <table>

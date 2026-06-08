@@ -11,6 +11,13 @@
             <h2 class="text-xl font-extrabold text-gray-800">Laporan Lengkap & Cetak PDF</h2>
             <p class="text-sm text-gray-500 mt-1">Lihat dan unduh laporan detail klinik.</p>
         </div>
+        <form action="{{ route('reports.index') }}" method="GET" class="flex items-center gap-3">
+            <label for="month" class="text-sm font-bold text-gray-600">Bulan Laporan:</label>
+            <input type="month" id="month" name="month" value="{{ $filterMonth }}" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-primary focus:border-primary">
+            <button type="submit" class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded-lg text-sm transition-colors">
+                Terapkan
+            </button>
+        </form>
     </div>
 
     {{-- TABS NAVIGATION --}}
@@ -44,7 +51,7 @@
                         <h3 class="font-extrabold text-lg text-gray-800">Laporan Transaksi Lunas</h3>
                         <p class="text-xs text-gray-400 mt-1">Total {{ $paidInvoices->count() }} data transaksi yang telah diverifikasi.</p>
                     </div>
-                    <a href="{{ route('reports.export.finance') }}" target="_blank" class="bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded-xl text-sm transition-colors flex items-center gap-2">
+                    <a href="{{ route('reports.export.finance', ['month' => $filterMonth]) }}" target="_blank" class="bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded-xl text-sm transition-colors flex items-center gap-2">
                         <i class="fa-solid fa-download"></i> Download PDF
                     </a>
                 </div>
@@ -100,7 +107,7 @@
                         <h3 class="font-extrabold text-lg text-gray-800">Rekap Inventaris Obat Keluar</h3>
                         <p class="text-xs text-gray-400 mt-1">Daftar obat yang berhasil diresepkan dan dibayar.</p>
                     </div>
-                    <a href="{{ route('reports.export.medicine') }}" target="_blank" class="bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded-xl text-sm transition-colors flex items-center gap-2">
+                    <a href="{{ route('reports.export.medicine', ['month' => $filterMonth]) }}" target="_blank" class="bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded-xl text-sm transition-colors flex items-center gap-2">
                         <i class="fa-solid fa-download"></i> Download PDF
                     </a>
                 </div>

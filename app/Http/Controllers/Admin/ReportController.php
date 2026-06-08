@@ -15,21 +15,26 @@ class ReportController extends Controller
 {
     public function index(Request $request)
     {
-        $thisMonth = Carbon::now()->month;
-        $thisYear = Carbon::now()->year;
+        // Parse the requested month, default to current month
+        $filterMonth = $request->input('month', Carbon::now()->format('Y-m'));
+        $dateParts = explode('-', $filterMonth);
+        $selectedYear = $dateParts[0] ?? Carbon::now()->year;
+        $selectedMonth = $dateParts[1] ?? Carbon::now()->month;
 
         // Data Laporan Keuangan
         $paidInvoices = Invoice::with(['user', 'appointment.poli'])
             ->where('status', 'paid')
+            ->whereYear('updated_at', $selectedYear)
+            ->whereMonth('updated_at', $selectedMonth)
             ->orderBy('updated_at', 'desc')
             ->get();
 
         // Data Kinerja Dokter
-        $doctorPerformance = User::where('role', 'dokter')->get()->map(function($doc) use ($thisMonth, $thisYear) {
+        $doctorPerformance = User::where('role', 'dokter')->get()->map(function($doc) use ($selectedMonth, $selectedYear) {
             $doc->completed_appointments_count = Appointment::where('dokter_id', $doc->id)
                 ->where('status', 'selesai')
-                ->whereMonth('updated_at', $thisMonth)
-                ->whereYear('updated_at', $thisYear)
+                ->whereMonth('updated_at', $selectedMonth)
+                ->whereYear('updated_at', $selectedYear)
                 ->count();
             return $doc;
         });
@@ -38,35 +43,51 @@ class ReportController extends Controller
         $medicinesSold = Prescription::whereHas('medicalRecord.appointment.invoice', function($q) {
                 $q->where('status', 'paid');
             })
+            ->whereYear('created_at', $selectedYear)
+            ->whereMonth('created_at', $selectedMonth)
             ->with(['medicalRecord.appointment.user'])
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('admin.reports.index', compact('paidInvoices', 'doctorPerformance', 'medicinesSold'));
+        return view('admin.reports.index', compact('paidInvoices', 'doctorPerformance', 'medicinesSold', 'filterMonth'));
     }
 
-    public function exportPdfFinance()
+    public function exportPdfFinance(Request $request)
     {
+        $filterMonth = $request->input('month', Carbon::now()->format('Y-m'));
+        $dateParts = explode('-', $filterMonth);
+        $selectedYear = $dateParts[0] ?? Carbon::now()->year;
+        $selectedMonth = $dateParts[1] ?? Carbon::now()->month;
+
         $invoices = Invoice::with(['user', 'appointment.poli'])
             ->where('status', 'paid')
+            ->whereYear('updated_at', $selectedYear)
+            ->whereMonth('updated_at', $selectedMonth)
             ->orderBy('updated_at', 'desc')
             ->get();
 
-        $pdf = Pdf::loadView('admin.reports.pdf-finance', compact('invoices'));
+        $pdf = Pdf::loadView('admin.reports.pdf-finance', compact('invoices', 'filterMonth'));
         // download('name.pdf') to automatically download, stream() to view in browser
-        return $pdf->download('Laporan_Keuangan_Klinik.pdf');
+        return $pdf->download('Laporan_Keuangan_Klinik_'.$filterMonth.'.pdf');
     }
 
-    public function exportPdfMedicine()
+    public function exportPdfMedicine(Request $request)
     {
+        $filterMonth = $request->input('month', Carbon::now()->format('Y-m'));
+        $dateParts = explode('-', $filterMonth);
+        $selectedYear = $dateParts[0] ?? Carbon::now()->year;
+        $selectedMonth = $dateParts[1] ?? Carbon::now()->month;
+
         $medicines = Prescription::whereHas('medicalRecord.appointment.invoice', function($q) {
                 $q->where('status', 'paid');
             })
+            ->whereYear('created_at', $selectedYear)
+            ->whereMonth('created_at', $selectedMonth)
             ->with(['medicalRecord.appointment.user'])
             ->orderBy('created_at', 'desc')
             ->get();
 
-        $pdf = Pdf::loadView('admin.reports.pdf-medicine', compact('medicines'));
-        return $pdf->download('Laporan_Rekap_Obat_Klinik.pdf');
+        $pdf = Pdf::loadView('admin.reports.pdf-medicine', compact('medicines', 'filterMonth'));
+        return $pdf->download('Laporan_Rekap_Obat_Klinik_'.$filterMonth.'.pdf');
     }
 }
