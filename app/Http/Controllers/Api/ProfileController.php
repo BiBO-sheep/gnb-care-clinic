@@ -25,12 +25,20 @@ class ProfileController extends Controller
             'name' => 'required|string|max:255',
             'email' => ['required', 'string', 'email', Rule::unique('users')->ignore($user->id)],
             'phone' => 'nullable|string',
+            'address' => 'nullable|string',
+            'blood_type' => 'nullable|string|max:5',
+            'height' => 'nullable|string',
+            'weight' => 'nullable|string',
             'password' => 'nullable|string|min:8'
         ]);
 
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->phone = $request->phone;
+        if ($request->has('phone')) $user->phone = $request->phone;
+        if ($request->has('address')) $user->address = $request->address;
+        if ($request->has('blood_type')) $user->blood_type = $request->blood_type;
+        if ($request->has('height')) $user->height = $request->height;
+        if ($request->has('weight')) $user->weight = $request->weight;
 
         if ($request->password) {
             $user->password = Hash::make($request->password);

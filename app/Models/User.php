@@ -40,6 +40,8 @@ class User extends Authenticatable implements FilamentUser
         'phone',
         'address',
         'blood_type',
+        'height',
+        'weight',
         'emergency_contact_name',
         'emergency_contact_phone',
         'avatar',
