@@ -14,8 +14,8 @@ class PrescriptionResource extends Resource
 {
     protected static ?string $model = Prescription::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-beaker';
-    protected static ?string $navigationGroup = 'Laporan';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-beaker';
+    protected static string|\UnitEnum|null $navigationGroup = 'Laporan';
     protected static ?string $navigationLabel = 'Rekap Obat Terjual';
     protected static ?string $modelLabel = 'Obat Terjual';
     protected static ?string $pluralModelLabel = 'Rekap Obat Terjual';
