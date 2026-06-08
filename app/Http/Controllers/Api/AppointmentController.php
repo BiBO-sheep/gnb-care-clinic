@@ -51,12 +51,12 @@ class AppointmentController extends Controller
         $today = date('M d, 2026');
 
         $myAppointment = Appointment::where('user_id', $userId)
-            ->where('tanggal', $today)
+            // ->where('tanggal', $today) // DEMO MODE
             ->whereIn('status', ['scheduled', 'check_in', 'pemeriksaan'])
             ->first();
 
-        $nowServing = Appointment::where('tanggal', $today)
-            ->where('status', 'pemeriksaan')
+        $nowServing = Appointment::where('status', 'pemeriksaan')
+            // ->where('tanggal', $today) // DEMO MODE
             ->min('queue_number');
 
         return response()->json([
@@ -271,7 +271,7 @@ class AppointmentController extends Controller
         $today = date('M d, Y'); // Format: May 06, 2026
 
         $appointment = Appointment::where('user_id', Auth::id())
-            ->whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') = STR_TO_DATE(?, '%b %d, %Y')", [$today])
+            // ->whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') = STR_TO_DATE(?, '%b %d, %Y')", [$today]) // DEMO MODE
             ->whereIn('status', ['scheduled', 'check_in', 'pemeriksaan'])
             ->with(['dokter', 'poli'])
             ->orderBy('tanggal', 'asc')

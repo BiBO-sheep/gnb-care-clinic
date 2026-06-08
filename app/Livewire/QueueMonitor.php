@@ -15,14 +15,16 @@ class QueueMonitor extends Component
 
         // Yang sedang di ruang dokter atau sedang dipanggil (Status: pemeriksaan, check_in)
         $nowServing = Appointment::with(['user', 'poli', 'dokter'])
-                        ->whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$todayDate])
+                        // ->whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$todayDate]) // DEMO MODE
+
                         ->whereIn('status', ['pemeriksaan', 'check_in'])
                         ->orderByRaw("CASE WHEN status = 'check_in' THEN 1 ELSE 2 END")
                         ->first();
 
         // 1. Antrean Hari Ini (Status: scheduled)
         $antreanHariIni = Appointment::with(['user', 'poli'])
-                        ->whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$todayDate])
+                        // ->whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$todayDate]) // DEMO MODE
+
                         ->where('status', 'scheduled')
                         ->orderBy('id', 'asc')
                         ->get();
@@ -35,10 +37,10 @@ class QueueMonitor extends Component
                         ->orderBy('id', 'asc')
                         ->get();
 
-        $totalHariIni = Appointment::whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$todayDate])->count();
+        $totalHariIni = Appointment::count(); // DEMO MODE: menghitung semua
 
-        $selesai = Appointment::whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$todayDate])
-                    ->where('status', 'selesai')
+        $selesai = Appointment::where('status', 'selesai')
+                    // ->whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$todayDate]) // DEMO MODE
                     ->count();
 
         return view('livewire.queue-monitor', compact(

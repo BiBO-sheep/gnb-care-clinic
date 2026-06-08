@@ -16,18 +16,20 @@ class KasirController extends Controller
 
         // Tagihan menunggu kasir input harga obat
         $pendingKasir = Invoice::with(['user', 'appointment.poli', 'appointment.medical_record.prescriptions'])
-                    ->whereHas('appointment', function($q) use ($today) {
+                    // DEMO MODE ->
+                    /* ->whereHas('appointment', function($q) use ($today) {
                         $q->whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$today]);
-                    })
+                    }) */
                     ->where('status', 'pending_kasir')
                     ->orderBy('created_at', 'desc')
                     ->get();
 
         // Tagihan siap bayar (sudah difinalisasi kasir)
         $invoices = Invoice::with(['user', 'appointment.poli'])
-                    ->whereHas('appointment', function($q) use ($today) {
+                    // DEMO MODE ->
+                    /* ->whereHas('appointment', function($q) use ($today) {
                         $q->whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$today]);
-                    })
+                    }) */
                     ->where('status', 'unpaid')
                     ->orderBy('created_at', 'desc')
                     ->get();
