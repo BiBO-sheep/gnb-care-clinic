@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class LaporanBulanan extends Page
 {
-    protected static string $view = 'filament.pages.laporan-bulanan';
+    protected string $view = 'filament.pages.laporan-bulanan';
 
     public static function getNavigationIcon(): string|\BackedEnum|null
     {
