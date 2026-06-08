@@ -102,7 +102,7 @@ class AuthController extends Controller
                 'email' => $request->email,
                 'google_id' => $request->google_id,
                 'password' => Hash::make(\Illuminate\Support\Str::random(16)),
-                'role' => 'patient', // Default role untuk login Google
+                'role' => 'pasien', // Harus 'pasien' karena enum di database adalah ['admin', 'dokter', 'pasien']
             ]);
         }
 
