@@ -200,6 +200,28 @@ class AppointmentController extends Controller
         ], 200);
     }
 
+    public function simulatePaymentSuccess(Request $request, $invoice_id)
+    {
+        $invoice = \App\Models\Invoice::find($invoice_id);
+
+        if (!$invoice) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invoice tidak ditemukan.'
+            ], 404);
+        }
+
+        $invoice->status = 'paid';
+        $invoice->payment_method = $request->payment_method ?? $invoice->payment_method;
+        $invoice->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Simulasi pembayaran berhasil, tagihan lunas.',
+            'data' => $invoice
+        ], 200);
+    }
+
     public function selectPaymentMethod(Request $request, $invoiceId)
     {
         $request->validate([

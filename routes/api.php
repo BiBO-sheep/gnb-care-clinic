@@ -38,6 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/payment/process', [App\Http\Controllers\Api\PaymentController::class, 'process']);
     Route::post('/payment-method/{invoiceId}', [AppointmentController::class, 'selectPaymentMethod']);
     Route::post('/confirm-cashier-payment/{invoiceId}', [AppointmentController::class, 'confirmCashierPayment']);
+    Route::post('/simulate-payment-success/{invoiceId}', [AppointmentController::class, 'simulatePaymentSuccess']);
 
     // Notifications
     Route::get('/notifications', [NotificationController::class, 'index']);
