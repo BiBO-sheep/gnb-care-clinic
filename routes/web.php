@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\KasirController;
 use App\Http\Controllers\Admin\DoctorController;
 use App\Http\Controllers\Admin\PasienController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ReportController;
 
 Route::get('/', function () {
     return view('welcome'); 
@@ -30,8 +31,13 @@ Route::get('/login', function () {
 Route::middleware(['auth'])->prefix('klinik')->group(function () {
     
     // 0. DASHBOARD ANALYTICS
-    Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/dashboard/cleanup', [DashboardController::class, 'cleanupBugData'])->name('dashboard.cleanup');
+
+    // Laporan & Cetak PDF
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/export/finance', [ReportController::class, 'exportPdfFinance'])->name('reports.export.finance');
+    Route::get('/reports/export/medicine', [ReportController::class, 'exportPdfMedicine'])->name('reports.export.medicine');
 
     // 1. RUTE MONITOR ANTREAN (Resepsionis)
     Route::get('/queue', [AppointmentController::class, 'queue']);

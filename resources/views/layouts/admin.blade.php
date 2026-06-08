@@ -56,6 +56,10 @@
                 <i class="fa-solid fa-chart-line w-6 text-center mr-2"></i> Dashboard
             </a>
 
+            <a href="{{ route('reports.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-xl transition-all {{ request()->is('klinik/reports*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
+                <i class="fa-solid fa-print w-6 text-center mr-2"></i> Laporan & Export
+            </a>
+
             <a href="/klinik/queue" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/queue*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
                 <i class="fa-solid fa-list-ol w-6 text-center mr-2"></i> Monitor Antrean
             </a>

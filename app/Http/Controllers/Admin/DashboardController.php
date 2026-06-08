@@ -60,31 +60,6 @@ class DashboardController extends Controller
             ->get();
 
         // ── Laporan Keuangan: Invoice yang sudah Paid ────────────────────
-        $paidInvoices = Invoice::with(['user', 'appointment.poli'])
-            ->where('status', 'paid')
-            ->orderBy('updated_at', 'desc')
-            ->limit(50)
-            ->get();
-
-        // ── Kinerja Dokter (Bulan Ini) ───────────────────────────────────
-        $doctorPerformance = User::where('role', 'dokter')->get()->map(function($doc) use ($thisMonth, $thisYear) {
-            $doc->completed_appointments_count = Appointment::where('dokter_id', $doc->id)
-                ->where('status', 'selesai')
-                ->whereMonth('updated_at', $thisMonth)
-                ->whereYear('updated_at', $thisYear)
-                ->count();
-            return $doc;
-        });
-
-        // ── Rekap Obat Terjual (Dari Tagihan Lunas) ──────────────────────
-        $medicinesSold = Prescription::whereHas('medicalRecord.appointment.invoice', function($q) {
-                $q->where('status', 'paid');
-            })
-            ->with(['medicalRecord.appointment.user'])
-            ->orderBy('created_at', 'desc')
-            ->limit(100)
-            ->get();
-
         return view('admin.dashboard', compact(
             'todayAppointments',
             'todayRevenue',
@@ -96,10 +71,7 @@ class DashboardController extends Controller
             'pendingKasirCount',
             'pendingUnpaidCount',
             'totalPatients',
-            'recentBookings',
-            'paidInvoices',
-            'doctorPerformance',
-            'medicinesSold'
+            'recentBookings'
         ));
     }
 
