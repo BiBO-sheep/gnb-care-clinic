@@ -34,7 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->navigationItems([
                 \Filament\Navigation\NavigationItem::make('Operasional Klinik')
-                    ->url('/klinik/queue')
+                    ->url('/klinik/dashboard')
                     ->icon('heroicon-o-computer-desktop')
                     ->group('Sistem Medis')
                     ->sort(1),

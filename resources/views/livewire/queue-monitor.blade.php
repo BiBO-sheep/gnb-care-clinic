@@ -61,6 +61,12 @@
             </div>
         </div>
 
+        @if(session('success'))
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl relative mb-4" role="alert">
+            <span class="block sm:inline">{{ session('success') }}</span>
+        </div>
+        @endif
+
         {{-- TABEL 1: Antrean Hari Ini --}}
         <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
             <div class="p-6 border-b border-gray-100 flex justify-between items-center">
@@ -141,9 +147,15 @@
                             <td class="px-6 py-4">{{ $queue->poli->name ?? 'Poli Umum' }}</td>
                             <td class="px-6 py-4">{{ $queue->jam }}</td>
                             <td class="px-6 py-4">
-                                <span class="inline-flex items-center px-3 py-1 rounded-lg bg-gray-100 text-gray-500 font-bold text-[10px] uppercase">
-                                    Menunggu Hari H
-                                </span>
+                                @if(\Carbon\Carbon::parse($queue->tanggal)->isToday())
+                                    <span class="inline-flex items-center px-3 py-1 rounded-lg bg-blue-100 text-blue-600 font-bold text-[10px] uppercase">
+                                        Menunggu Jam Booking
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-3 py-1 rounded-lg bg-gray-100 text-gray-500 font-bold text-[10px] uppercase">
+                                        Menunggu Hari H
+                                    </span>
+                                @endif
                             </td>
                         </tr>
                         @empty
@@ -161,9 +173,18 @@
 
     {{-- SIDEBAR: Ringkasan Hari Ini --}}
     <div class="space-y-6">
-        <div class="bg-primary rounded-3xl p-6 shadow-lg shadow-primary/20 text-white">
-            <h3 class="font-bold text-white mb-6">Ringkasan Hari Ini</h3>
-            <div class="space-y-4">
+        <div class="bg-primary rounded-3xl p-6 shadow-lg shadow-primary/20 text-white relative overflow-hidden">
+            <div class="absolute -right-5 -bottom-5 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
+            
+            <div class="flex justify-between items-center mb-6 relative z-10">
+                <h3 class="font-bold text-white">Ringkasan Hari Ini</h3>
+                <!-- TOMBOL CLEANUP -->
+                <button wire:click="cleanupOldData" onclick="return confirm('Yakin bersihkan data testing masa lalu?')" class="bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm transition-all" title="Bersihkan Data Kadaluarsa">
+                    <i class="fa-solid fa-broom"></i> Bersihkan
+                </button>
+            </div>
+            
+            <div class="space-y-4 relative z-10">
                 <div class="flex justify-between items-center border-b border-white/10 pb-3">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">

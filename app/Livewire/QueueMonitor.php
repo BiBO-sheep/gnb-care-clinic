@@ -8,6 +8,16 @@ use Livewire\Component;
 
 class QueueMonitor extends Component
 {
+    public function cleanupOldData()
+    {
+        $todayStr = Carbon::today()->toDateString();
+        $updated = Appointment::whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') < ?", [$todayStr])
+            ->whereNotIn('status', ['selesai', 'batal', 'kadaluarsa'])
+            ->update(['status' => 'kadaluarsa']);
+
+        session()->flash('success', "Berhasil membatalkan {$updated} data testing masa lalu!");
+    }
+
     public function render()
     {
         $today = Carbon::today()->format('M j, Y');  // Format: "Jun 3, 2026" sesuai format DB
