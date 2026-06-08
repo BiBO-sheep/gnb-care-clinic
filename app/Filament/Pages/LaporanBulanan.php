@@ -12,13 +12,32 @@ use Illuminate\Support\Facades\DB;
 
 class LaporanBulanan extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-document-chart-bar';
-    protected static ?string $navigationGroup = 'Laporan';
-    protected static ?string $navigationLabel = 'Laporan Bulanan';
-    protected static ?string $title = 'Laporan Rekapitulasi Klinik';
-    protected static ?int $navigationSort = 3;
-
     protected static string $view = 'filament.pages.laporan-bulanan';
+
+    public static function getNavigationIcon(): string|\BackedEnum|null
+    {
+        return 'heroicon-o-document-chart-bar';
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Laporan';
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return 'Laporan Bulanan';
+    }
+
+    public function getTitle(): string|\Illuminate\Contracts\Support\Htmlable
+    {
+        return 'Laporan Rekapitulasi Klinik';
+    }
+
+    public static function getNavigationSort(): ?int
+    {
+        return 3;
+    }
 
     public $selectedMonth;
     
