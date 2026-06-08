@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PrescriptionResource\Pages;
 use App\Models\Prescription;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -14,12 +14,35 @@ class PrescriptionResource extends Resource
 {
     protected static ?string $model = Prescription::class;
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-beaker';
-    protected static string|\UnitEnum|null $navigationGroup = 'Laporan';
-    protected static ?string $navigationLabel = 'Rekap Obat Terjual';
-    protected static ?string $modelLabel = 'Obat Terjual';
-    protected static ?string $pluralModelLabel = 'Rekap Obat Terjual';
-    protected static ?int $navigationSort = 4;
+    public static function getNavigationIcon(): string|\BackedEnum|null
+    {
+        return 'heroicon-o-beaker';
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Laporan';
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return 'Rekap Obat Terjual';
+    }
+
+    public static function getModelLabel(): string
+    {
+        return 'Obat Terjual';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Rekap Obat Terjual';
+    }
+
+    public static function getNavigationSort(): ?int
+    {
+        return 4;
+    }
 
     // Menonaktifkan fitur Create agar Read-Only
     public static function canCreate(): bool
@@ -27,9 +50,9 @@ class PrescriptionResource extends Resource
         return false;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form->schema([]);
+        return $schema;
     }
 
     public static function table(Table $table): Table
