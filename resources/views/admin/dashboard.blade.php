@@ -7,6 +7,30 @@
 <div class="space-y-8">
 
     {{-- ================================================================ --}}
+    {{-- BARIS 0: NOTIFIKASI & HEADER --}}
+    {{-- ================================================================ --}}
+    @if(session('success'))
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl shadow-sm flex items-center gap-3">
+        <i class="fa-solid fa-circle-check text-xl"></i>
+        <span class="font-bold">{{ session('success') }}</span>
+    </div>
+    @endif
+
+    <div class="flex justify-between items-center bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+        <div>
+            <h2 class="text-xl font-extrabold text-gray-800">Ikhtisar Klinik</h2>
+            <p class="text-sm text-gray-500 mt-1">Pantau antrean, pendapatan, dan hapus data bug dengan cepat.</p>
+        </div>
+        <form action="{{ route('dashboard.cleanup') }}" method="POST" onsubmit="return confirm('PERINGATAN!\nAksi ini akan MENGHAPUS PERMANEN semua data antrean, rekam medis, dan tagihan yang berstatus nyangkut atau yang jadwalnya kurang dari hari ini.\n\nYakin ingin membersihkan database untuk presentasi?')">
+            @csrf
+            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white text-sm font-bold py-2.5 px-5 rounded-xl shadow-md shadow-red-500/20 transition-all flex items-center gap-2">
+                <i class="fa-solid fa-trash-can"></i>
+                Sapu Bersih Data Bug
+            </button>
+        </form>
+    </div>
+
+    {{-- ================================================================ --}}
     {{-- BARIS 1: KARTU STATISTIK UTAMA --}}
     {{-- ================================================================ --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
@@ -296,6 +320,92 @@
                     </tr>
                 </tfoot>
                 @endif
+            </table>
+        </div>
+    </div>
+
+    {{-- ================================================================ --}}
+    {{-- BARIS 5: KINERJA DOKTER (BULAN INI) --}}
+    {{-- ================================================================ --}}
+    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+            <div>
+                <h3 class="font-extrabold text-lg text-gray-800">Kinerja Dokter Bulan Ini</h3>
+                <p class="text-xs text-gray-400 mt-1">Jumlah pasien yang berhasil diselesaikan oleh masing-masing dokter.</p>
+            </div>
+            <div class="w-10 h-10 bg-primary-light rounded-full flex items-center justify-center text-primary">
+                <i class="fa-solid fa-user-doctor"></i>
+            </div>
+        </div>
+        <div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @forelse($doctorPerformance as $doc)
+            <div class="border border-gray-100 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
+                <img src="https://ui-avatars.com/api/?name={{ urlencode($doc->name) }}&background=E6F0FA&color=0B2B5E" class="w-14 h-14 rounded-xl">
+                <div>
+                    <h4 class="font-bold text-gray-800 text-sm">{{ $doc->name }}</h4>
+                    <p class="text-xs text-gray-500">{{ $doc->email }}</p>
+                    <div class="mt-2 flex items-center gap-2">
+                        <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-lg"><i class="fa-solid fa-check-double mr-1"></i>{{ $doc->completed_appointments_count }} Pasien Selesai</span>
+                    </div>
+                </div>
+            </div>
+            @empty
+            <p class="text-sm text-gray-400 col-span-full">Belum ada dokter atau belum ada pasien yang selesai bulan ini.</p>
+            @endforelse
+        </div>
+    </div>
+
+    {{-- ================================================================ --}}
+    {{-- BARIS 6: REKAP OBAT TERJUAL (DARI INVOICE LUNAS) --}}
+    {{-- ================================================================ --}}
+    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+            <div>
+                <h3 class="font-extrabold text-lg text-gray-800">Rekap Obat Terjual</h3>
+                <p class="text-xs text-gray-400 mt-1">100 data obat terakhir yang keluar dari tagihan Lunas.</p>
+            </div>
+            <span class="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full">{{ $medicinesSold->count() }} obat</span>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left text-gray-500 font-body">
+                <thead class="text-xs text-gray-400 uppercase bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-4">Tanggal Keluar</th>
+                        <th class="px-6 py-4">Nama Obat</th>
+                        <th class="px-6 py-4">Dosis / Jumlah</th>
+                        <th class="px-6 py-4">Aturan Pakai</th>
+                        <th class="px-6 py-4">Total Harga</th>
+                        <th class="px-6 py-4">Pasien</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    @forelse($medicinesSold as $med)
+                    <tr class="bg-white hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-4 text-xs font-medium text-gray-500">
+                            {{ $med->created_at->format('d M Y, H:i') }}
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="font-bold text-gray-800">{{ $med->medicine_name }}</span>
+                        </td>
+                        <td class="px-6 py-4 text-gray-600">
+                            {{ $med->dosage }}
+                        </td>
+                        <td class="px-6 py-4 text-gray-600 text-xs">
+                            {{ $med->rules }}
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="font-extrabold text-primary">Rp {{ number_format($med->price, 0, ',', '.') }}</span>
+                        </td>
+                        <td class="px-6 py-4 text-gray-600 text-xs">
+                            {{ $med->medical_record->appointment->user->name ?? '-' }}
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="6" class="px-6 py-12 text-center text-gray-400">Belum ada data obat terjual.</td>
+                    </tr>
+                    @endforelse
+                </tbody>
             </table>
         </div>
     </div>

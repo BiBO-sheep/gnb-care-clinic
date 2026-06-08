@@ -31,6 +31,7 @@ Route::middleware(['auth'])->prefix('klinik')->group(function () {
     
     // 0. DASHBOARD ANALYTICS
     Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::post('/dashboard/cleanup', [DashboardController::class, 'cleanupBugData'])->name('dashboard.cleanup');
 
     // 1. RUTE MONITOR ANTREAN (Resepsionis)
     Route::get('/queue', [AppointmentController::class, 'queue']);

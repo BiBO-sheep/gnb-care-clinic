@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use App\Models\Invoice;
 use App\Models\User;
+use App\Models\Prescription;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -65,6 +66,23 @@ class DashboardController extends Controller
             ->limit(50)
             ->get();
 
+        // ── Kinerja Dokter (Bulan Ini) ───────────────────────────────────
+        $doctorPerformance = User::where('role', 'dokter')
+            ->withCount(['appointments as completed_appointments_count' => function ($query) use ($thisMonth, $thisYear) {
+                $query->where('status', 'selesai')
+                      ->whereMonth('updated_at', $thisMonth)
+                      ->whereYear('updated_at', $thisYear);
+            }])
+            ->get();
+
+        // ── Rekap Obat Terjual (Dari Tagihan Lunas) ──────────────────────
+        $medicinesSold = Prescription::whereHas('medical_record.appointment.invoice', function($q) {
+                $q->where('status', 'paid');
+            })
+            ->orderBy('created_at', 'desc')
+            ->limit(100)
+            ->get();
+
         return view('admin.dashboard', compact(
             'todayAppointments',
             'todayRevenue',
@@ -77,7 +95,35 @@ class DashboardController extends Controller
             'pendingUnpaidCount',
             'totalPatients',
             'recentBookings',
-            'paidInvoices'
+            'paidInvoices',
+            'doctorPerformance',
+            'medicinesSold'
         ));
+    }
+
+    public function cleanupBugData()
+    {
+        $todayStr = Carbon::today()->toDateString();
+        
+        // Cari data yang jadwalnya KURANG DARI hari ini, dan statusnya belum selesai/batal/kadaluarsa
+        $appointments = Appointment::with(['invoice', 'medical_record.prescriptions'])
+            ->whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') < ?", [$todayStr])
+            ->whereNotIn('status', ['selesai', 'batal', 'kadaluarsa'])
+            ->get();
+
+        $deletedCount = 0;
+        foreach ($appointments as $apt) {
+            if ($apt->invoice) {
+                $apt->invoice->delete();
+            }
+            if ($apt->medical_record) {
+                $apt->medical_record->prescriptions()->delete();
+                $apt->medical_record->delete();
+            }
+            $apt->delete();
+            $deletedCount++;
+        }
+
+        return redirect()->back()->with('success', "Ajaib! Berhasil menghapus permanen {$deletedCount} data bug/masa lalu yang menyangkut!");
     }
 }
