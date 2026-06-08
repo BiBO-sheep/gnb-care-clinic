@@ -397,7 +397,7 @@
                             <span class="font-extrabold text-primary">Rp {{ number_format($med->price, 0, ',', '.') }}</span>
                         </td>
                         <td class="px-6 py-4 text-gray-600 text-xs">
-                            {{ $med->medical_record->appointment->user->name ?? '-' }}
+                            {{ $med->medicalRecord->appointment->user->name ?? '-' }}
                         </td>
                     </tr>
                     @empty

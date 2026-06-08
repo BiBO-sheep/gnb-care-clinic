@@ -67,18 +67,20 @@ class DashboardController extends Controller
             ->get();
 
         // ── Kinerja Dokter (Bulan Ini) ───────────────────────────────────
-        $doctorPerformance = User::where('role', 'dokter')
-            ->withCount(['appointments as completed_appointments_count' => function ($query) use ($thisMonth, $thisYear) {
-                $query->where('status', 'selesai')
-                      ->whereMonth('updated_at', $thisMonth)
-                      ->whereYear('updated_at', $thisYear);
-            }])
-            ->get();
+        $doctorPerformance = User::where('role', 'dokter')->get()->map(function($doc) use ($thisMonth, $thisYear) {
+            $doc->completed_appointments_count = Appointment::where('dokter_id', $doc->id)
+                ->where('status', 'selesai')
+                ->whereMonth('updated_at', $thisMonth)
+                ->whereYear('updated_at', $thisYear)
+                ->count();
+            return $doc;
+        });
 
         // ── Rekap Obat Terjual (Dari Tagihan Lunas) ──────────────────────
-        $medicinesSold = Prescription::whereHas('medical_record.appointment.invoice', function($q) {
+        $medicinesSold = Prescription::whereHas('medicalRecord.appointment.invoice', function($q) {
                 $q->where('status', 'paid');
             })
+            ->with(['medicalRecord.appointment.user'])
             ->orderBy('created_at', 'desc')
             ->limit(100)
             ->get();
