@@ -44,15 +44,10 @@ class InvoiceController extends Controller
         })->values();
 
         // Tentukan status yang tampil di Flutter
-        // pending_kasir = dokter sudah isi resep, kasir belum input harga
-        // unpaid tapi semua obat masih harga 0 = juga dianggap pending
+        // pending_kasir sudah tidak relevan lagi, tapi tetap di-handle untuk backward compatibility
         $status = $invoice->status;
-        $allMedicinesPriced = $prescriptions->isNotEmpty() 
-            ? $prescriptions->every(fn($p) => $p->price > 0)
-            : true; // Kalau tidak ada resep, tidak perlu harga obat
-
-        if ($status === 'pending_kasir' || ($status === 'unpaid' && $prescriptions->isNotEmpty() && !$allMedicinesPriced)) {
-            $displayStatus = 'pending'; // Kasir belum selesai input harga
+        if ($status === 'pending_kasir') {
+            $displayStatus = 'pending'; // Kasir belum selesai
         } else {
             $displayStatus = $status; // 'unpaid' (siap bayar) atau 'paid'
         }

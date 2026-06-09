@@ -40,48 +40,35 @@ class KasirController extends Controller
         return view('admin.kasir', compact('invoices', 'pendingKasir', 'totalTagihan', 'jumlahInvoice'));
     }
 
-    // Kasir menginput harga obat dan finalisasi tagihan
-    public function updateHargaObat(Request $request, $invoiceId)
-    {
-        $invoice = Invoice::with('appointment.medical_record.prescriptions')->findOrFail($invoiceId);
-        $medicalRecord = $invoice->appointment->medical_record;
+    // Kasir tidak lagi menginput harga karena sudah otomatis dari Master Obat
 
-        if (!$medicalRecord) {
-            return back()->with('error', 'Rekam medis tidak ditemukan.');
-        }
-
-        $totalMedicines = 0;
-
-        // Update harga masing-masing obat
-        if ($request->has('prices') && is_array($request->prices)) {
-            foreach ($request->prices as $prescriptionId => $price) {
-                $prescription = Prescription::find($prescriptionId);
-                if ($prescription) {
-                    $prescription->price = (int) $price;
-                    $prescription->save();
-                    $totalMedicines += (int) $price;
-                }
-            }
-        }
-
-        // Update invoice dengan total obat dan grand total baru
-        $invoice->total_medicines = $totalMedicines;
-        $invoice->grand_total = $invoice->total_consultation + $totalMedicines;
-        $invoice->status = 'unpaid'; // Siap dibayar
-        $invoice->save();
-
-        return back()->with('success', 'Harga obat berhasil diperbarui. Tagihan siap dibayar!');
-    }
 
     public function konfirmasiLunas($id)
     {
-        $invoice = Invoice::findOrFail($id);
+        $invoice = Invoice::with('appointment.medical_record.prescriptions')->findOrFail($id);
         
+        // Update status tagihan jadi lunas
         $invoice->update([
             'status' => 'paid',
             'payment_method' => 'cashier'
         ]);
 
-        return back()->with('success', 'Pembayaran atas nama ' . $invoice->user->name . ' Berhasil Dikonfirmasi Lunas!');
+        // Kurangi stok obat
+        $medicalRecord = $invoice->appointment->medical_record ?? null;
+        if ($medicalRecord && $medicalRecord->prescriptions) {
+            foreach ($medicalRecord->prescriptions as $prescription) {
+                if ($prescription->obat_id) {
+                    $obat = \App\Models\Obat::find($prescription->obat_id);
+                    if ($obat) {
+                        // Extract numeric qty from dosage string (e.g., "2 Pcs" -> 2)
+                        $qty = (int) filter_var($prescription->dosage, FILTER_SANITIZE_NUMBER_INT) ?: 1;
+                        $obat->stok -= $qty;
+                        $obat->save();
+                    }
+                }
+            }
+        }
+
+        return back()->with('success', 'Pembayaran lunas! Stok obat otomatis dikurangi.');
     }
 }

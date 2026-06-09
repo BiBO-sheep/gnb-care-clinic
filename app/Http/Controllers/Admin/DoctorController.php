@@ -37,6 +37,9 @@ class DoctorController extends Controller
         // Update status ke 'pemeriksaan' agar sinkron ke Flutter & Antrean Depan
         $appointment->update(['status' => 'pemeriksaan']);
         
-        return view('admin.doctor.examine', compact('appointment'));
+        // Ambil data obat yang stoknya masih ada
+        $obats = \App\Models\Obat::where('stok', '>', 0)->get();
+
+        return view('admin.doctor.examine', compact('appointment', 'obats'));
     }
 }

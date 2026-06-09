@@ -61,29 +61,38 @@ class AppointmentController extends Controller
                 'treatment_plan' => $request->tindakan,
             ]);
 
-            // C. Masukkan Daftar Obat ke tabel Prescriptions (harga = 0, diisi kasir nanti)
+            // C. Masukkan Daftar Obat ke tabel Prescriptions (Hitung harga otomatis)
+            $totalMedicines = 0;
             if ($request->has('medicines') && is_array($request->medicines)) {
                 foreach ($request->medicines as $med) {
-                    if (!empty($med['name'])) {
-                        Prescription::create([
-                            'medical_record_id' => $record->id,
-                            'medicine_name'     => $med['name'],
-                            'dosage'            => ($med['qty'] ?? 1) . ' Pcs',
-                            'rules'             => $med['rules'] ?? '-',
-                            'price'             => 0, // Harga diisi oleh Kasir
-                        ]);
+                    if (!empty($med['obat_id'])) {
+                        $obat = \App\Models\Obat::find($med['obat_id']);
+                        if ($obat) {
+                            $qty = $med['qty'] ?? 1;
+                            $price = $obat->harga * $qty;
+                            $totalMedicines += $price;
+
+                            Prescription::create([
+                                'medical_record_id' => $record->id,
+                                'obat_id'           => $obat->id,
+                                'medicine_name'     => $obat->nama_obat,
+                                'dosage'            => $qty . ' Pcs',
+                                'rules'             => $med['rules'] ?? '-',
+                                'price'             => $price,
+                            ]);
+                        }
                     }
                 }
             }
 
-            // D. Buat Invoice awal — total_medicines = 0 dulu, Kasir yang finalisasi
+            // D. Buat Invoice — total_medicines diisi langsung dari perhitungan, status = unpaid
             Invoice::create([
                 'appointment_id'    => $appointment->id,
                 'user_id'           => $appointment->user_id,
                 'total_consultation'=> $consultationPrice,
-                'total_medicines'   => 0,
-                'grand_total'       => $consultationPrice, // Sementara hanya jasa dokter
-                'status'            => 'pending_kasir',    // Status baru: menunggu kasir input harga obat
+                'total_medicines'   => $totalMedicines,
+                'grand_total'       => $consultationPrice + $totalMedicines,
+                'status'            => 'unpaid',    // Siap dibayar, kasir tidak perlu input
             ]);
 
             // E. Ubah Status Antrean Selesai
@@ -91,7 +100,7 @@ class AppointmentController extends Controller
 
             DB::commit();
 
-            return redirect('/klinik/queue')->with('success', 'Pemeriksaan selesai! Resep dikirim ke Kasir untuk penghitungan harga obat.');
+            return redirect('/klinik/queue')->with('success', 'Pemeriksaan selesai! Tagihan otomatis dihitung dan siap dibayar oleh Kasir.');
 
         } catch (\Exception $e) {
             DB::rollback();
