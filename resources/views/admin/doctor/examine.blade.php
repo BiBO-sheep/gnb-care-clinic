@@ -103,14 +103,26 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <style>
     .select2-container .select2-selection--single {
-        height: 42px;
+        height: 48px; /* Lebih tinggi agar nampak jelas */
         border-radius: 0.75rem;
         border-color: #e5e7eb;
         display: flex;
         align-items: center;
+        font-size: 15px; /* Font lebih besar */
+        font-weight: 500;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 48px;
+        padding-left: 16px; /* Padding lebih lega */
+        color: #374151;
     }
     .select2-container--default .select2-selection--single .select2-selection__arrow {
-        height: 40px;
+        height: 46px;
+    }
+    /* Membesarkan ukuran dropdown list-nya juga */
+    .select2-results__option {
+        padding: 10px 16px;
+        font-size: 15px;
     }
 </style>
 <script>

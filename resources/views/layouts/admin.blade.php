@@ -64,8 +64,12 @@
                 <i class="fa-solid fa-list-ol w-6 text-center mr-2"></i> Monitor Antrean
             </a>
 
-            <a href="/klinik/pasien" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/pasien*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
+            <a href="/klinik/pasien" class="flex items-center px-4 py-3 mb-2 rounded-xl transition-all {{ request()->is('klinik/pasien*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
                 <i class="fa-solid fa-address-book w-6 text-center mr-2"></i> Buku Pasien
+            </a>
+
+            <a href="/klinik/obat" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/obat*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
+                <i class="fa-solid fa-pills w-6 text-center mr-2"></i> Kelola Obat
             </a>
 
             <p class="px-2 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 mt-6">Medis & Kasir</p>

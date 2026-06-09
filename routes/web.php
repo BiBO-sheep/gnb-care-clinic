@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\DoctorController;
 use App\Http\Controllers\Admin\PasienController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\ObatController;
 
 Route::get('/', function () {
     return view('welcome'); 
@@ -59,4 +60,7 @@ Route::middleware(['auth'])->prefix('klinik')->group(function () {
     // 5. RUTE BUKU PASIEN & REKAM MEDIS
     Route::get('/pasien', [PasienController::class, 'index']);
     Route::get('/pasien/{id}', [PasienController::class, 'show']);
+
+    // 6. RUTE MANAJEMEN OBAT
+    Route::resource('obat', ObatController::class, ['as' => 'admin']);
 });

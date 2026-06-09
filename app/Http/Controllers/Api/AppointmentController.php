@@ -202,7 +202,7 @@ class AppointmentController extends Controller
 
     public function simulatePaymentSuccess(Request $request, $invoice_id)
     {
-        $invoice = \App\Models\Invoice::find($invoice_id);
+        $invoice = \App\Models\Invoice::with('appointment.medical_record.prescriptions')->find($invoice_id);
 
         if (!$invoice) {
             return response()->json([
@@ -214,6 +214,21 @@ class AppointmentController extends Controller
         $invoice->status = 'paid';
         $invoice->payment_method = $request->payment_method ?? $invoice->payment_method;
         $invoice->save();
+
+        // Kurangi stok obat
+        $medicalRecord = $invoice->appointment->medical_record ?? null;
+        if ($medicalRecord && $medicalRecord->prescriptions) {
+            foreach ($medicalRecord->prescriptions as $prescription) {
+                if ($prescription->obat_id) {
+                    $obat = \App\Models\Obat::find($prescription->obat_id);
+                    if ($obat) {
+                        $qty = (int) filter_var($prescription->dosage, FILTER_SANITIZE_NUMBER_INT) ?: 1;
+                        $obat->stok -= $qty;
+                        $obat->save();
+                    }
+                }
+            }
+        }
 
         return response()->json([
             'success' => true,
