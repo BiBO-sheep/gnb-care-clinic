@@ -46,17 +46,19 @@ class AppointmentController extends Controller
 
         DB::beginTransaction();
         try {
-            // A. Harga Jasa Dokter dari INPUT FORM (bukan auto dari DB)
-            $consultationPrice = (int) $request->input('consultation_fee', 0);
+            // A. Harga Jasa Dokter (Otomatis dari DB)
+            $consultationPrice = $appointment->dokter->price ?? 150000;
 
             // B. Buat Rekam Medis (Medical Record)
             $record = MedicalRecord::create([
                 'user_id'        => $appointment->user_id,
                 'doctor_id'      => $appointment->dokter_id ?? 1,
                 'appointment_id' => $appointment->id,
+                'keluhan'        => $request->keluhan,
                 'diagnosis'      => $request->diagnosis,
-                'doctor_notes'   => 'Tindakan selesai dilakukan di ruang dokter.',
-                'treatment_plan' => 'Silakan tebus resep obat dan istirahat.',
+                'tindakan'       => $request->tindakan,
+                'doctor_notes'   => 'Selesai diperiksa dokter.',
+                'treatment_plan' => $request->tindakan,
             ]);
 
             // C. Masukkan Daftar Obat ke tabel Prescriptions (harga = 0, diisi kasir nanti)

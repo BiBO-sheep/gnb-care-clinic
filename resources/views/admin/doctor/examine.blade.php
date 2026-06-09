@@ -20,24 +20,28 @@
         <form action="/klinik/appointment/{{ $appointment->id }}/prescribe" method="POST" class="space-y-6">
             @csrf
 
+            {{-- Keluhan Pasien --}}
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-2">
+                    <i class="fa-solid fa-head-side-cough text-primary mr-1"></i> Keluhan Pasien
+                </label>
+                <textarea name="keluhan" rows="2" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm resize-none" placeholder="Tuliskan keluhan utama pasien..." required></textarea>
+            </div>
+
             {{-- Diagnosis --}}
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2">
                     <i class="fa-solid fa-stethoscope text-primary mr-1"></i> Diagnosis Penyakit
                 </label>
-                <textarea name="diagnosis" rows="3" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm resize-none" placeholder="Tuliskan diagnosis penyakit pasien..." required></textarea>
+                <textarea name="diagnosis" rows="2" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm resize-none" placeholder="Tuliskan diagnosis penyakit pasien..." required></textarea>
             </div>
 
-            {{-- Biaya Konsultasi Dokter --}}
+            {{-- Penanganan / Tindakan --}}
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2">
-                    <i class="fa-solid fa-hand-holding-medical text-primary mr-1"></i> Biaya Jasa Dokter (Rp)
+                    <i class="fa-solid fa-hand-holding-medical text-primary mr-1"></i> Penanganan / Tindakan Medis
                 </label>
-                <div class="relative">
-                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-sm">Rp</span>
-                    <input type="number" name="consultation_fee" value="{{ $appointment->dokter->price ?? 150000 }}" class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-10 pr-4 py-3 font-bold text-lg outline-none focus:ring-2 focus:ring-primary/20 transition-all" required>
-                </div>
-                <p class="text-xs text-gray-400 mt-1">Harga jasa konsultasi dokter (otomatis terisi dari profil dokter).</p>
+                <textarea name="tindakan" rows="2" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm resize-none" placeholder="Tindakan medis yang dilakukan (misal: penjahitan luka, dll)..." required></textarea>
             </div>
 
             {{-- Resep Obat (Tanpa Harga — Kasir yang isi) --}}

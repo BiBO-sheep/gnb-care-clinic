@@ -13,6 +13,7 @@ class MedicalRecord extends Model
         'user_id',
         'doctor_id',
         'appointment_id',
+        'keluhan',
         'diagnosis',
         'tindakan',
         'catatan_obat',
