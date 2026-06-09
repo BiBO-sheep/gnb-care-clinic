@@ -24,6 +24,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Api\DashboardController::class, 'getDashboardData']);
     Route::get('/profile', [App\Http\Controllers\Api\ProfileController::class, 'show']);
     Route::put('/profile/update', [App\Http\Controllers\Api\ProfileController::class, 'update']);
+    Route::post('/profile/change-password', [App\Http\Controllers\Api\ProfileController::class, 'changePassword']);
+    Route::post('/profile/update-fcm-token', [App\Http\Controllers\Api\ProfileController::class, 'updateFcmToken']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
     // Data Klinik

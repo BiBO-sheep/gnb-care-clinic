@@ -336,6 +336,40 @@ class AppointmentController extends Controller
         $appointment->status = $request->status;
         $appointment->save();
 
+        // Kirim Notifikasi FCM jika status menjadi "pemeriksaan" (Pasien Dipanggil)
+        if ($request->status === 'pemeriksaan' && $appointment->user && $appointment->user->fcm_token) {
+            try {
+                putenv('GOOGLE_APPLICATION_CREDENTIALS=' . storage_path('app/firebase-adminsdk.json'));
+                $client = new \Google_Client();
+                $client->useApplicationDefaultCredentials();
+                $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
+                $httpClient = $client->authorize();
+
+                $message = [
+                    'message' => [
+                        'token' => $appointment->user->fcm_token,
+                        'notification' => [
+                            'title' => 'Panggilan Antrean!',
+                            'body' => 'Giliran Anda telah tiba (Antrean ' . $appointment->queue_number . '). Silakan menuju ruang dokter.'
+                        ],
+                        'android' => [
+                            'notification' => [
+                                'channel_id' => 'hospital_call_channel',
+                                'sound' => 'tingtung'
+                            ]
+                        ]
+                    ]
+                ];
+
+                $projectId = 'gandb-care-clinic';
+                $httpClient->post("https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send", [
+                    'json' => $message
+                ]);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('FCM Send Error: ' . $e->getMessage());
+            }
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Status updated successfully.',
