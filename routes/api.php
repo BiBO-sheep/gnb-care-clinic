@@ -30,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/poli', [KlinikController::class, 'getPoli']);
     Route::get('/poli/{poli_id}/dokter', [KlinikController::class, 'getDokterByPoli']);
     Route::post('/appointments', [App\Http\Controllers\Api\AppointmentController::class, 'store']);
+    Route::get('/available-slots', [App\Http\Controllers\Api\AppointmentController::class, 'getAvailableSlots']);
     Route::get('/queue-status', [App\Http\Controllers\Api\AppointmentController::class, 'getQueueStatus']);
     Route::get('/history', [App\Http\Controllers\Api\AppointmentController::class, 'getHistory']);
     Route::post('/simulate-examination/{id}', [AppointmentController::class, 'simulateExamination']);

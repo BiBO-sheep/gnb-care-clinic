@@ -25,6 +25,19 @@ class AppointmentController extends Controller
 
         $userId = Auth::guard('sanctum')->id();
 
+        $quotaPerSlot = 3;
+        $bookedCount = Appointment::where('tanggal', $request->tanggal)
+            ->where('poli_id', $request->poli_id)
+            ->where('jam', $request->jam)
+            ->count();
+
+        if ($bookedCount >= $quotaPerSlot) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kuota untuk jam ini sudah penuh. Silakan pilih jam lain.'
+            ], 400);
+        }
+
         $countToday = Appointment::where('tanggal', $request->tanggal)->count();
         $queueNumber = 'A-' . ($countToday + 1);
 
@@ -55,13 +68,56 @@ class AppointmentController extends Controller
             ->whereIn('status', ['scheduled', 'check_in', 'pemeriksaan'])
             ->first();
 
-        $nowServing = Appointment::where('status', 'pemeriksaan')
+        $nowServingStr = Appointment::where('status', 'pemeriksaan')
             // ->where('tanggal', $today) // DEMO MODE
             ->min('queue_number');
 
+        $nowServing = $nowServingStr ?? 'A-1';
+
+        $peopleAhead = 0;
+        if ($myAppointment) {
+            $myQ = (int) str_replace('A-', '', $myAppointment->queue_number);
+            $nowQ = (int) str_replace('A-', '', $nowServing);
+            $peopleAhead = max(0, $myQ - $nowQ);
+        }
+
         return response()->json([
             'my_queue' => $myAppointment ? $myAppointment->queue_number : 'A-0',
-            'now_serving' => $nowServing ?? 'A-1',
+            'now_serving' => $nowServing,
+            'people_ahead' => $peopleAhead
+        ]);
+    }
+
+    public function getAvailableSlots(Request $request)
+    {
+        $request->validate([
+            'tanggal' => 'required',
+            'poli_id' => 'required'
+        ]);
+
+        $baseSlots = ['09:00', '10:30', '11:15', '14:00', '15:45', '17:45'];
+        $quotaPerSlot = 3;
+
+        $appointments = Appointment::where('tanggal', $request->tanggal)
+            ->where('poli_id', $request->poli_id)
+            ->select('jam', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+            ->groupBy('jam')
+            ->get()
+            ->keyBy('jam');
+
+        $slots = [];
+        foreach ($baseSlots as $jam) {
+            $booked = isset($appointments[$jam]) ? $appointments[$jam]->total : 0;
+            $slots[] = [
+                'jam' => $jam,
+                'status' => $booked >= $quotaPerSlot ? 'booked' : 'available',
+                'sisa_kuota' => max(0, $quotaPerSlot - $booked)
+            ];
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $slots
         ]);
     }
     
