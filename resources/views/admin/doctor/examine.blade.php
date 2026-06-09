@@ -68,12 +68,14 @@
 
                 <div id="medicineContainer" class="space-y-2">
                     <div class="grid grid-cols-12 gap-2 medicine-row items-center">
-                        <select name="medicines[0][obat_id]" class="select2-obat col-span-12 md:col-span-5 bg-white border border-gray-200 rounded-xl p-2.5 text-sm outline-none focus:ring-2 focus:ring-secondary/20" required>
-                            <option value="">Ketik/Pilih Obat...</option>
-                            @foreach($obats as $obat)
-                                <option value="{{ $obat->id }}">{{ $obat->nama_obat }} (Stok: {{ $obat->stok }})</option>
-                            @endforeach
-                        </select>
+                        <div class="col-span-12 md:col-span-5">
+                            <select name="medicines[0][obat_id]" class="select2-obat w-full bg-white border border-gray-200 rounded-xl p-2.5 text-sm outline-none focus:ring-2 focus:ring-secondary/20" required>
+                                <option value="">Ketik/Pilih Obat...</option>
+                                @foreach($obats as $obat)
+                                    <option value="{{ $obat->id }}">{{ $obat->nama_obat }} (Stok: {{ $obat->stok }})</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <input type="number" name="medicines[0][qty]" placeholder="Qty" min="1" class="col-span-4 md:col-span-2 bg-white border border-gray-200 rounded-xl p-2.5 text-sm outline-none focus:ring-2 focus:ring-secondary/20" required>
                         <input type="text" name="medicines[0][rules]" placeholder="Contoh: 3x1 sesudah makan" class="col-span-8 md:col-span-4 bg-white border border-gray-200 rounded-xl p-2.5 text-sm outline-none focus:ring-2 focus:ring-secondary/20" required>
                         <div class="col-span-12 md:col-span-1 flex justify-end">
@@ -138,12 +140,14 @@
         const container = document.getElementById('medicineContainer');
         const html = `
             <div class="grid grid-cols-12 gap-2 medicine-row items-center">
-                <select name="medicines[${medicineCount}][obat_id]" class="select2-obat col-span-12 md:col-span-5 bg-white border border-gray-200 rounded-xl p-2.5 text-sm outline-none focus:ring-2 focus:ring-secondary/20" required>
-                    <option value="">Ketik/Pilih Obat...</option>
-                    @foreach($obats as $obat)
-                        <option value="{{ $obat->id }}">{{ $obat->nama_obat }} (Stok: {{ $obat->stok }})</option>
-                    @endforeach
-                </select>
+                <div class="col-span-12 md:col-span-5">
+                    <select name="medicines[${medicineCount}][obat_id]" class="select2-obat w-full bg-white border border-gray-200 rounded-xl p-2.5 text-sm outline-none focus:ring-2 focus:ring-secondary/20" required>
+                        <option value="">Ketik/Pilih Obat...</option>
+                        @foreach($obats as $obat)
+                            <option value="{{ $obat->id }}">{{ $obat->nama_obat }} (Stok: {{ $obat->stok }})</option>
+                        @endforeach
+                    </select>
+                </div>
                 <input type="number" name="medicines[${medicineCount}][qty]" placeholder="Qty" min="1" class="col-span-4 md:col-span-2 bg-white border border-gray-200 rounded-xl p-2.5 text-sm outline-none focus:ring-2 focus:ring-secondary/20" required>
                 <input type="text" name="medicines[${medicineCount}][rules]" placeholder="Contoh: 3x1 sesudah makan" class="col-span-7 md:col-span-4 bg-white border border-gray-200 rounded-xl p-2.5 text-sm outline-none focus:ring-2 focus:ring-secondary/20" required>
                 <div class="col-span-1 flex justify-end">
