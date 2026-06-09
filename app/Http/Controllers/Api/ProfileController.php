@@ -29,7 +29,8 @@ class ProfileController extends Controller
             'blood_type' => 'nullable|string|max:5',
             'height' => 'nullable|string',
             'weight' => 'nullable|string',
-            'password' => 'nullable|string|min:8'
+            'password' => 'nullable|string|min:8',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
         ]);
 
         $user->name = $request->name;
@@ -42,6 +43,15 @@ class ProfileController extends Controller
 
         if ($request->password) {
             $user->password = Hash::make($request->password);
+        }
+
+        if ($request->hasFile('avatar')) {
+            // Hapus avatar lama jika ada
+            if ($user->avatar && \Illuminate\Support\Facades\Storage::disk('public')->exists($user->avatar)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->avatar);
+            }
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $user->avatar = $path;
         }
 
         $user->save();
