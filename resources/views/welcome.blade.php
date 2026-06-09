@@ -227,7 +227,7 @@
             </p>
             
             <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
-                <a href="{{ asset('downloads/gandb_care_clinic.apk') }}" download class="flex items-center gap-4 bg-black text-white px-6 py-3 rounded-2xl hover:scale-105 transition-transform w-full sm:w-auto border border-gray-800">
+                <a href="{{ asset('downloads/g&b-care-clinic.apk') }}" download class="flex items-center gap-4 bg-black text-white px-6 py-3 rounded-2xl hover:scale-105 transition-transform w-full sm:w-auto border border-gray-800">
                     <i class="fa-brands fa-android text-3xl text-green-500"></i>
                     <div class="text-left">
                         <p class="text-[10px] font-bold text-gray-300 uppercase tracking-wide">Unduh Langsung</p>
