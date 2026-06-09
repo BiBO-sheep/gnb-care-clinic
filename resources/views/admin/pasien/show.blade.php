@@ -26,13 +26,21 @@
             </div>
         </div>
 
-        <div class="relative z-10 flex gap-4">
-            <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100 text-center min-w-[100px]">
+        <div class="relative z-10 flex flex-wrap gap-4">
+            <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100 text-center min-w-[80px]">
                 <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Gol. Darah</p>
                 <p class="text-xl font-black text-primary">{{ $user->blood_type ?? '-' }}</p>
             </div>
-            <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100 text-center min-w-[100px]">
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Total Sesi</p>
+            <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100 text-center min-w-[80px]">
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Tinggi</p>
+                <p class="text-xl font-black text-primary">{{ $user->height ?? '-' }}<span class="text-xs text-gray-400 ml-1">cm</span></p>
+            </div>
+            <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100 text-center min-w-[80px]">
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Berat</p>
+                <p class="text-xl font-black text-primary">{{ $user->weight ?? '-' }}<span class="text-xs text-gray-400 ml-1">kg</span></p>
+            </div>
+            <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100 text-center min-w-[80px]">
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Sesi</p>
                 <p class="text-xl font-black text-secondary">{{ $user->appointments->count() }}</p>
             </div>
         </div>

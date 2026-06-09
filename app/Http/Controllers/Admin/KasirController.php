@@ -69,6 +69,8 @@ class KasirController extends Controller
             }
         }
 
-        return back()->with('success', 'Pembayaran lunas! Stok obat otomatis dikurangi.');
+        $invoice->appointment->user->notify(new \App\Notifications\PaymentSuccessNotification());
+
+        return back()->with('success', 'Pembayaran lunas! Stok obat otomatis dikurangi dan notifikasi dikirim.');
     }
 }

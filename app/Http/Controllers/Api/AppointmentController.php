@@ -51,6 +51,8 @@ class AppointmentController extends Controller
             'status' => 'scheduled'
         ]);
 
+        $appointment->user->notify(new \App\Notifications\AppointmentCreatedNotification());
+
         return response()->json([
             'success' => true,
             'message' => 'Booking sukses!',
@@ -189,6 +191,8 @@ class AppointmentController extends Controller
                 'status' => 'unpaid',
             ]);
 
+            $appointment->user->notify(new \App\Notifications\ExaminationCompletedNotification());
+
             return response()->json([
                 'success' => true,
                 'message' => 'Simulasi Berhasil! Dokter selesai memeriksa.',
@@ -285,6 +289,8 @@ class AppointmentController extends Controller
                 }
             }
         }
+
+        $invoice->appointment->user->notify(new \App\Notifications\PaymentSuccessNotification());
 
         return response()->json([
             'success' => true,
