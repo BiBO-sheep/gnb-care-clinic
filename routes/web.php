@@ -14,6 +14,15 @@ Route::get('/', function () {
     return view('welcome'); 
 });
 
+// Fallback rute untuk foto profil jika symlink gagal di shared hosting
+Route::get('/storage/avatars/{filename}', function ($filename) {
+    $path = storage_path('app/public/avatars/' . $filename);
+    if (!\Illuminate\Support\Facades\File::exists($path)) {
+        abort(404);
+    }
+    return response()->file($path);
+});
+
 // =========================================================
 // KEAMANAN TINGKAT 1: POS SATPAM (LOGIN REDIRECT)
 // =========================================================
