@@ -353,6 +353,7 @@ class AppointmentController extends Controller
                             'body' => 'Giliran Anda telah tiba (Antrean ' . $appointment->queue_number . '). Silakan menuju ruang dokter.'
                         ],
                         'android' => [
+                            'priority' => 'high',
                             'notification' => [
                                 'channel_id' => 'hospital_call_channel',
                                 'sound' => 'tingtung'
