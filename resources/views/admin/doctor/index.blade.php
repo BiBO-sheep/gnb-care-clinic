@@ -15,7 +15,14 @@
             <div>
                 <p class="text-primary font-bold text-xs uppercase tracking-widest">Sedang Diperiksa</p>
                 <h3 class="text-xl font-extrabold text-gray-900">{{ $activePatient->user->name }}</h3>
-                <p class="text-sm text-gray-600">Antrean: <b>{{ $activePatient->queue_number }}</b></p>
+                <p class="text-sm text-gray-600 mb-2">Antrean: <b>{{ $activePatient->queue_number }}</b></p>
+                <div class="flex items-center gap-2">
+                    <span class="bg-blue-100 text-blue-700 text-[10px] px-2 py-1 rounded font-bold uppercase">{{ $activePatient->poli->name ?? 'Poli' }}</span>
+                    @if(auth()->user()->role === 'admin')
+                        <span class="bg-purple-100 text-purple-700 text-[10px] px-2 py-1 rounded font-bold">👨‍⚕️ dr. {{ $activePatient->dokter->name ?? '-' }}</span>
+                    @endif
+                    <span class="bg-gray-100 text-gray-600 text-[10px] px-2 py-1 rounded font-bold"><i class="fa-regular fa-clock mr-1"></i>{{ $activePatient->jam }}</span>
+                </div>
             </div>
         </div>
         <a href="/klinik/doctor/examine/{{ $activePatient->id }}" class="bg-primary text-white px-8 py-3 rounded-xl font-bold hover:bg-[#004f54] transition-all">
@@ -35,7 +42,13 @@
                     <span class="text-2xl font-black text-gray-300 group-hover:text-primary/20 transition-colors">{{ $patient->queue_number }}</span>
                     <span class="bg-white px-3 py-1 rounded-full text-[10px] font-bold text-gray-400 border border-gray-100">{{ $patient->jam }}</span>
                 </div>
-                <h4 class="font-bold text-gray-800 mb-5 text-lg">{{ $patient->user->name }}</h4>
+                <h4 class="font-bold text-gray-800 mb-3 text-lg">{{ $patient->user->name }}</h4>
+                <div class="flex flex-wrap gap-1 mb-5">
+                    <span class="bg-blue-100 text-blue-700 text-[10px] px-2 py-1 rounded font-bold uppercase">{{ $patient->poli->name ?? 'Poli' }}</span>
+                    @if(auth()->user()->role === 'admin')
+                        <span class="bg-purple-100 text-purple-700 text-[10px] px-2 py-1 rounded font-bold">👨‍⚕️ dr. {{ $patient->dokter->name ?? '-' }}</span>
+                    @endif
+                </div>
                 <a href="/klinik/doctor/examine/{{ $patient->id }}" class="block text-center bg-white border border-gray-200 text-gray-700 py-3 rounded-xl font-bold text-sm hover:bg-primary hover:text-white hover:border-primary transition-all">
                     Mulai Pemeriksaan
                 </a>
