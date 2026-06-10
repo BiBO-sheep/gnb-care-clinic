@@ -77,7 +77,7 @@
 
                 <div class="space-y-4">
                     @foreach($medicines as $index => $medicine)
-                    <div class="grid grid-cols-12 gap-2 medicine-row items-center">
+                    <div class="grid grid-cols-12 gap-2 medicine-row items-center" wire:key="medicine-{{ $index }}">
                         <div class="col-span-12 md:col-span-5">
                             <select wire:model.defer="medicines.{{ $index }}.obat_id" class="w-full bg-white border border-gray-200 rounded-xl p-2.5 text-sm outline-none focus:ring-2 focus:ring-secondary/20" required {{ auth()->user()->role === 'admin' ? 'disabled' : '' }}>
                                 <option value="">Pilih Obat...</option>

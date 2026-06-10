@@ -56,9 +56,15 @@
                 <i class="fa-solid fa-chart-line w-6 text-center mr-2"></i> Dashboard
             </a>
 
+            @if(auth()->user()->role === 'dokter')
+            <a href="#" onclick="alert('Akses Ditolak: Fitur Laporan & Export hanya untuk Admin.'); return false;" class="flex items-center px-4 py-3 mb-2 rounded-xl transition-all text-gray-400 cursor-not-allowed opacity-60">
+                <i class="fa-solid fa-lock w-6 text-center mr-2"></i> Laporan & Export
+            </a>
+            @else
             <a href="{{ route('reports.index') }}" wire:navigate class="flex items-center px-4 py-3 mb-2 rounded-xl transition-all {{ request()->is('klinik/reports*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
                 <i class="fa-solid fa-print w-6 text-center mr-2"></i> Laporan & Export
             </a>
+            @endif
 
             <a href="/klinik/queue" wire:navigate class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/queue*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
                 <i class="fa-solid fa-list-ol w-6 text-center mr-2"></i> Monitor Antrean
@@ -68,9 +74,15 @@
                 <i class="fa-solid fa-address-book w-6 text-center mr-2"></i> Buku Pasien
             </a>
 
+            @if(auth()->user()->role === 'dokter')
+            <a href="#" onclick="alert('Akses Ditolak: Fitur Kelola Obat hanya untuk Admin / Apoteker.'); return false;" class="flex items-center px-4 py-3 rounded-xl transition-all text-gray-400 cursor-not-allowed opacity-60">
+                <i class="fa-solid fa-lock w-6 text-center mr-2"></i> Kelola Obat
+            </a>
+            @else
             <a href="/klinik/obat" wire:navigate class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/obat*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
                 <i class="fa-solid fa-pills w-6 text-center mr-2"></i> Kelola Obat
             </a>
+            @endif
 
             <p class="px-2 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 mt-6">Medis & Kasir</p>
             
@@ -78,9 +90,15 @@
                 <i class="fa-solid fa-user-doctor w-6 text-center mr-2"></i> Ruang Dokter
             </a>
 
+            @if(auth()->user()->role === 'dokter')
+            <a href="#" onclick="alert('Akses Ditolak: Fitur Pembayaran / Kasir hanya untuk Admin / Kasir.'); return false;" class="flex items-center px-4 py-3 rounded-xl transition-all text-gray-400 cursor-not-allowed opacity-60">
+                <i class="fa-solid fa-lock w-6 text-center mr-2"></i> Pembayaran
+            </a>
+            @else
             <a href="/klinik/kasir" wire:navigate class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/kasir*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
                 <i class="fa-solid fa-cash-register w-6 text-center mr-2"></i> Pembayaran
             </a>
+            @endif
 
         </nav>
 
