@@ -50,7 +50,11 @@
                     @endif
                 </div>
                 <a href="/klinik/doctor/examine/{{ $patient->id }}" class="block text-center bg-white border border-gray-200 text-gray-700 py-3 rounded-xl font-bold text-sm hover:bg-primary hover:text-white hover:border-primary transition-all">
-                    Mulai Pemeriksaan
+                    @if(auth()->user()->role === 'admin')
+                        Lihat Detail Rekam Medis
+                    @else
+                        Mulai Pemeriksaan
+                    @endif
                 </a>
             </div>
             @empty

@@ -16,7 +16,7 @@ class DoctorController extends Controller
 
         // Tampilkan pasien yang sudah check-in (siap diperiksa, hanya hari ini)
         $waitingQuery = Appointment::with(['user', 'poli'])
-                            // ->whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$today]) // DEMO MODE
+                            ->whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$today])
                             ->where('status', 'check_in')
                             ->orderBy('id', 'asc');
                             
@@ -27,7 +27,7 @@ class DoctorController extends Controller
 
         // Cek apakah ada pasien yang sedang "nyangkut" di status pemeriksaan (hanya hari ini)
         $activeQuery = Appointment::with(['user', 'poli'])
-                            // ->whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$today]) // DEMO MODE
+                            ->whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$today])
                             ->where('status', 'pemeriksaan');
                             
         if ($user && $user->role === 'dokter' && $user->poli_id) {
