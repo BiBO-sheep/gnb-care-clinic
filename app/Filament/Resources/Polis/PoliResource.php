@@ -22,6 +22,11 @@ class PoliResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->role === 'admin';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return PoliForm::configure($schema); // <-- Ini melempar form ke file PoliForm

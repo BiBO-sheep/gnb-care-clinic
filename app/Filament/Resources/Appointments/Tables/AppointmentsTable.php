@@ -30,9 +30,12 @@ class AppointmentsTable
                     ->sortable(),
                 TextColumn::make('poli.name')
                     ->label('Poli')
+                    ->badge()
+                    ->color('info')
                     ->searchable(),
                 TextColumn::make('dokter.name')
                     ->label('Dokter')
+                    ->visible(fn () => auth()->user() && auth()->user()->role === 'admin')
                     ->searchable(),
                 TextColumn::make('queue_number')
                     ->label('No. Antrian'),

@@ -49,4 +49,16 @@ class AppointmentResource extends Resource
             'edit' => EditAppointment::route('/{record}/edit'),
         ];
     }
+
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        $query = parent::getEloquentQuery();
+        
+        $user = auth()->user();
+        if ($user && $user->role === 'dokter' && $user->poli_id) {
+            $query->where('poli_id', $user->poli_id);
+        }
+        
+        return $query;
+    }
 }
