@@ -17,27 +17,17 @@ class DoctorIndex extends Component
         $user = auth()->user();
 
         $waitingQuery = Appointment::with(['user', 'poli'])
-                            ->whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$today])
+                            // ->whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$today]) // DEMO MODE
                             ->where('status', 'check_in')
                             ->orderBy('id', 'asc');
                             
         $activeQuery = Appointment::with(['user', 'poli'])
-                            ->whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$today])
+                            // ->whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$today]) // DEMO MODE
                             ->where('status', 'pemeriksaan');
                             
         if ($user && $user->role === 'dokter') {
-            $waitingQuery->where(function($query) use ($user) {
-                $query->where('dokter_id', $user->id);
-                if ($user->poli_id) {
-                    $query->orWhere('poli_id', $user->poli_id);
-                }
-            });
-            $activeQuery->where(function($query) use ($user) {
-                $query->where('dokter_id', $user->id);
-                if ($user->poli_id) {
-                    $query->orWhere('poli_id', $user->poli_id);
-                }
-            });
+            // DEMO MODE: Biarkan dokter melihat semua antrean (tidak di-filter by poli) agar presentasi lancar
+            // Jika mau strict: tambahkan $query->where('poli_id', $user->poli_id)
             $waitingPatients = $waitingQuery->get();
             $activePatient = $activeQuery->first();
             $activePatients = null; 
