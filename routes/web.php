@@ -40,36 +40,56 @@ Route::get('/login', function () {
 // Tidak ada yang bisa masuk tanpa akun Admin/Dokter/Resepsionis.
 Route::middleware(['auth'])->prefix('klinik')->group(function () {
     
-    // 0. DASHBOARD ANALYTICS
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::post('/dashboard/cleanup', [DashboardController::class, 'cleanupBugData'])->name('dashboard.cleanup');
+    // =========================================================
+    // RUTE KHUSUS ADMIN
+    // =========================================================
+    Route::middleware([function ($request, $next) {
+        if ($request->user()->role !== 'admin') abort(403, 'Akses ditolak: Khusus Admin.');
+        return $next($request);
+    }])->group(function () {
+        
+        // 0. DASHBOARD ANALYTICS
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::post('/dashboard/cleanup', [DashboardController::class, 'cleanupBugData'])->name('dashboard.cleanup');
 
-    // Laporan & Cetak PDF
-    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-    Route::get('/reports/export/finance', [ReportController::class, 'exportPdfFinance'])->name('reports.export.finance');
-    Route::get('/reports/export/medicine', [ReportController::class, 'exportPdfMedicine'])->name('reports.export.medicine');
+        // Laporan & Cetak PDF
+        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+        Route::get('/reports/export/finance', [ReportController::class, 'exportPdfFinance'])->name('reports.export.finance');
+        Route::get('/reports/export/medicine', [ReportController::class, 'exportPdfMedicine'])->name('reports.export.medicine');
 
-    // 1. RUTE MONITOR ANTREAN (Resepsionis)
-    Route::get('/queue', [AppointmentController::class, 'queue']);
+        // 1. RUTE MONITOR ANTREAN (Resepsionis)
+        Route::get('/queue', [AppointmentController::class, 'queue']);
 
-    // 2. RUTE RUANG DOKTER (Ngetik Resep)
-    Route::get('/doctor', [DoctorController::class, 'index']);
-    Route::get('/doctor/examine/{id}', [DoctorController::class, 'periksa']);
+        // 3. RUTE ACTION ADMIN (Tombol Panggil, Masuk)
+        Route::post('/appointment/{id}/call', [AppointmentController::class, 'callPasien']);
+        Route::post('/appointment/{id}/progress', [AppointmentController::class, 'masukDokter']);
+        
+        // 4. RUTE KASIR
+        Route::get('/kasir', [KasirController::class, 'index']);
+        Route::post('/kasir/{id}/lunas', [KasirController::class, 'konfirmasiLunas']);
+        Route::post('/kasir/{id}/harga-obat', [KasirController::class, 'updateHargaObat']);
 
-    // 3. RUTE ACTION ADMIN (Tombol Panggil, Masuk, Selesai)
-    Route::post('/appointment/{id}/call', [AppointmentController::class, 'callPasien']);
-    Route::post('/appointment/{id}/progress', [AppointmentController::class, 'masukDokter']);
-    Route::post('/appointment/{id}/prescribe', [AppointmentController::class, 'simpanResep']);
-    
-    // 4. RUTE KASIR
-    Route::get('/kasir', [KasirController::class, 'index']);
-    Route::post('/kasir/{id}/lunas', [KasirController::class, 'konfirmasiLunas']);
-    Route::post('/kasir/{id}/harga-obat', [KasirController::class, 'updateHargaObat']);
+        // 5. RUTE BUKU PASIEN & REKAM MEDIS
+        Route::get('/pasien', [PasienController::class, 'index']);
+        Route::get('/pasien/{id}', [PasienController::class, 'show']);
 
-    // 5. RUTE BUKU PASIEN & REKAM MEDIS
-    Route::get('/pasien', [PasienController::class, 'index']);
-    Route::get('/pasien/{id}', [PasienController::class, 'show']);
+        // 6. RUTE MANAJEMEN OBAT
+        Route::resource('obat', ObatController::class, ['as' => 'admin']);
+    });
 
-    // 6. RUTE MANAJEMEN OBAT
-    Route::resource('obat', ObatController::class, ['as' => 'admin']);
+    // =========================================================
+    // RUTE KHUSUS DOKTER
+    // =========================================================
+    Route::middleware([function ($request, $next) {
+        if ($request->user()->role !== 'dokter') abort(403, 'Akses ditolak: Khusus Dokter.');
+        return $next($request);
+    }])->group(function () {
+        
+        // 2. RUTE RUANG DOKTER (Ngetik Resep & Periksa)
+        Route::get('/doctor', [DoctorController::class, 'index']);
+        Route::get('/doctor/examine/{id}', [DoctorController::class, 'periksa']);
+        Route::post('/appointment/{id}/prescribe', [AppointmentController::class, 'simpanResep']);
+        
+    });
+
 });

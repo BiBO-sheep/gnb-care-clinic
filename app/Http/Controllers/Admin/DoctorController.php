@@ -12,20 +12,28 @@ class DoctorController extends Controller
     {
         $today = \Carbon\Carbon::today()->toDateString();
 
-        // Tampilkan pasien yang sudah check-in (siap diperiksa, hanya hari ini)
-        $waitingPatients = Appointment::with(['user', 'poli'])
-                            // ->whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$today]) // DEMO MODE
+        $user = auth()->user();
 
+        // Tampilkan pasien yang sudah check-in (siap diperiksa, hanya hari ini)
+        $waitingQuery = Appointment::with(['user', 'poli'])
+                            // ->whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$today]) // DEMO MODE
                             ->where('status', 'check_in')
-                            ->orderBy('id', 'asc')
-                            ->get();
+                            ->orderBy('id', 'asc');
+                            
+        if ($user && $user->role === 'dokter' && $user->poli_id) {
+            $waitingQuery->where('poli_id', $user->poli_id);
+        }
+        $waitingPatients = $waitingQuery->get();
 
         // Cek apakah ada pasien yang sedang "nyangkut" di status pemeriksaan (hanya hari ini)
-        $activePatient = Appointment::with(['user', 'poli'])
+        $activeQuery = Appointment::with(['user', 'poli'])
                             // ->whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$today]) // DEMO MODE
-
-                            ->where('status', 'pemeriksaan')
-                            ->first();
+                            ->where('status', 'pemeriksaan');
+                            
+        if ($user && $user->role === 'dokter' && $user->poli_id) {
+            $activeQuery->where('poli_id', $user->poli_id);
+        }
+        $activePatient = $activeQuery->first();
 
         return view('admin.doctor.index', compact('waitingPatients', 'activePatient'));
     }
