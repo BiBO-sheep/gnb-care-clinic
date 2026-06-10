@@ -1,4 +1,4 @@
-<div wire:poll.3s class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div wire:poll.10s class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
     <div class="lg:col-span-2 space-y-8">
 
