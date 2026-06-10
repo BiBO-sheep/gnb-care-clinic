@@ -20,6 +20,66 @@ class QueueMonitor extends Component
         session()->flash('success', "Berhasil membatalkan {$updated} data testing masa lalu!");
     }
 
+    public function callPasien($id)
+    {
+        if (auth()->user() && auth()->user()->role === 'dokter') {
+            session()->flash('error', 'Akses Ditolak: Dokter tidak boleh memanggil pasien.');
+            return;
+        }
+
+        $appointment = Appointment::find($id);
+        if (!$appointment) return;
+
+        $appointment->status = 'check_in';
+        $appointment->touch();
+        $appointment->save();
+
+        if ($appointment->user && $appointment->user->fcm_token) {
+            try {
+                putenv('GOOGLE_APPLICATION_CREDENTIALS=' . storage_path('app/firebase-adminsdk.json'));
+                $client = new \Google_Client();
+                $client->useApplicationDefaultCredentials();
+                $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
+                $httpClient = $client->authorize();
+
+                $message = [
+                    'message' => [
+                        'token' => $appointment->user->fcm_token,
+                        'notification' => [
+                            'title' => 'Panggilan Antrean!',
+                            'body' => 'Giliran Anda telah tiba (Antrean ' . $appointment->queue_number . '). Silakan menuju ' . ($appointment->poli->name ?? 'ruangan') . '.'
+                        ],
+                        'android' => [
+                            'priority' => 'high',
+                            'notification' => [
+                                'channel_id' => 'hospital_call_channel',
+                                'sound' => 'tingtung'
+                            ]
+                        ]
+                    ]
+                ];
+
+                $projectId = 'gandb-care-clinic';
+                $httpClient->post("https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send", [
+                    'json' => $message
+                ]);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('FCM Send Error: ' . $e->getMessage());
+            }
+        }
+
+        session()->flash('success', 'Pasien nomor ' . $appointment->queue_number . ' dipanggil!');
+    }
+
+    public function masukDokter($id)
+    {
+        $appointment = Appointment::find($id);
+        if ($appointment) {
+            $appointment->update(['status' => 'pemeriksaan']);
+            session()->flash('success', 'Pasien sudah berada di ruang dokter.');
+        }
+    }
+
     public function render()
     {
         $today = Carbon::today()->format('M j, Y');  // Format: "Jun 3, 2026" sesuai format DB

@@ -35,18 +35,12 @@
 
                     <div class="flex flex-col gap-2 mt-auto">
                         @if($serving->status == 'check_in')
-                            <form action="/klinik/appointment/{{ $serving->id }}/call" method="POST">
-                                @csrf
-                                <button type="submit" class="bg-primary hover:bg-[#004f54] text-white px-4 py-3 rounded-xl font-bold shadow-md shadow-primary/20 transition-all flex items-center justify-center gap-2 w-full text-sm">
-                                    <i class="fa-solid fa-bullhorn"></i> Panggil Ulang
-                                </button>
-                            </form>
-                            <form action="/klinik/appointment/{{ $serving->id }}/progress" method="POST">
-                                @csrf
-                                <button type="submit" class="bg-white hover:bg-gray-50 text-green-600 border border-green-200 px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 w-full text-sm">
-                                    <i class="fa-solid fa-check"></i> Pasien Masuk
-                                </button>
-                            </form>
+                            <button type="button" wire:click="callPasien({{ $serving->id }})" class="bg-primary hover:bg-[#004f54] text-white px-4 py-3 rounded-xl font-bold shadow-md shadow-primary/20 transition-all flex items-center justify-center gap-2 w-full text-sm">
+                                <i class="fa-solid fa-bullhorn"></i> Panggil Ulang
+                            </button>
+                            <button type="button" wire:click="masukDokter({{ $serving->id }})" class="bg-white hover:bg-gray-50 text-green-600 border border-green-200 px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 w-full text-sm">
+                                <i class="fa-solid fa-check"></i> Pasien Masuk
+                            </button>
                         @else
                             <div class="bg-green-50 text-green-700 p-3 rounded-xl border border-green-100 flex items-center justify-center gap-2 text-sm">
                                 <i class="fa-solid fa-stethoscope"></i>
@@ -105,12 +99,9 @@
                             <td class="px-6 py-4">{{ $queue->poli->name ?? 'Poli Umum' }}</td>
                             <td class="px-6 py-4">{{ $queue->jam }}</td>
                             <td class="px-6 py-4">
-                                <form action="/klinik/appointment/{{ $queue->id }}/call" method="POST">
-                                    @csrf
-                                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl text-xs px-4 py-2 text-center transition-all shadow-sm shadow-green-200">
-                                        Panggil
-                                    </button>
-                                </form>
+                                <button type="button" wire:click="callPasien({{ $queue->id }})" class="bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl text-xs px-4 py-2 text-center transition-all shadow-sm shadow-green-200">
+                                    Panggil
+                                </button>
                             </td>
                         </tr>
                         @empty
