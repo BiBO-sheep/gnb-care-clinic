@@ -142,6 +142,7 @@
 
         <main class="flex-1 overflow-y-auto p-8 bg-background">
             @yield('content')
+            {{ $slot ?? '' }}
         </main>
     </div>
 
