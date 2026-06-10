@@ -41,9 +41,17 @@ class DoctorController extends Controller
     public function periksa($id)
     {
         $appointment = Appointment::with(['user', 'poli', 'dokter'])->findOrFail($id);
+        $user = auth()->user();
+
+        // VALIDASI: Dokter dilarang periksa pasien poli lain!
+        if ($user->role === 'dokter' && $user->poli_id !== $appointment->poli_id) {
+            abort(403, 'Akses Ditolak: Pasien ini terdaftar di poli lain.');
+        }
         
-        // Update status ke 'pemeriksaan' agar sinkron ke Flutter & Antrean Depan
-        $appointment->update(['status' => 'pemeriksaan']);
+        // Update status ke 'pemeriksaan' HANYA jika yang klik adalah dokter
+        if ($user->role !== 'admin' && $appointment->status !== 'pemeriksaan') {
+            $appointment->update(['status' => 'pemeriksaan']);
+        }
         
         // Ambil data obat yang stoknya masih ada
         $obats = \App\Models\Obat::where('stok', '>', 0)->get();

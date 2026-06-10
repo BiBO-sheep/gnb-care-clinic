@@ -43,6 +43,17 @@ class AppointmentController extends Controller
     public function simpanResep(Request $request, $id)
     {
         $appointment = Appointment::findOrFail($id);
+        $user = auth()->user();
+
+        // VALIDASI: Admin tidak boleh simpan resep
+        if ($user->role === 'admin') {
+            abort(403, 'Akses Ditolak: Admin tidak diizinkan mengisi rekam medis.');
+        }
+
+        // VALIDASI: Dokter hanya boleh simpan resep untuk pasien di polinya sendiri
+        if ($user->role === 'dokter' && $user->poli_id !== $appointment->poli_id) {
+            abort(403, 'Akses Ditolak: Anda tidak dapat memeriksa pasien dari poli lain.');
+        }
 
         DB::beginTransaction();
         try {
