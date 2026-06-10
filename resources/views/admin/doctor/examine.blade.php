@@ -19,13 +19,19 @@
 
         <form action="/klinik/appointment/{{ $appointment->id }}/prescribe" method="POST" class="space-y-6">
             @csrf
+            
+            @if(auth()->user()->role === 'admin')
+            <div class="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-600 font-bold mb-4">
+                <i class="fa-solid fa-lock mr-2"></i> Mode Hanya Baca (Read-Only). Hanya dokter yang berhak mengisi rekam medis.
+            </div>
+            @endif
 
             {{-- Keluhan Pasien --}}
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2">
                     <i class="fa-solid fa-head-side-cough text-primary mr-1"></i> Keluhan Pasien
                 </label>
-                <textarea name="keluhan" rows="2" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm resize-none" placeholder="Tuliskan keluhan utama pasien..." required></textarea>
+                <textarea name="keluhan" rows="2" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm resize-none" placeholder="Tuliskan keluhan utama pasien..." required {{ auth()->user()->role === 'admin' ? 'readonly' : '' }}></textarea>
             </div>
 
             {{-- Diagnosis --}}
@@ -33,7 +39,7 @@
                 <label class="block text-sm font-bold text-gray-700 mb-2">
                     <i class="fa-solid fa-stethoscope text-primary mr-1"></i> Diagnosis Penyakit
                 </label>
-                <textarea name="diagnosis" rows="2" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm resize-none" placeholder="Tuliskan diagnosis penyakit pasien..." required></textarea>
+                <textarea name="diagnosis" rows="2" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm resize-none" placeholder="Tuliskan diagnosis penyakit pasien..." required {{ auth()->user()->role === 'admin' ? 'readonly' : '' }}></textarea>
             </div>
 
             {{-- Penanganan / Tindakan --}}
@@ -41,7 +47,7 @@
                 <label class="block text-sm font-bold text-gray-700 mb-2">
                     <i class="fa-solid fa-hand-holding-medical text-primary mr-1"></i> Penanganan / Tindakan Medis
                 </label>
-                <textarea name="tindakan" rows="2" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm resize-none" placeholder="Tindakan medis yang dilakukan (misal: penjahitan luka, dll)..." required></textarea>
+                <textarea name="tindakan" rows="2" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm resize-none" placeholder="Tindakan medis yang dilakukan (misal: penjahitan luka, dll)..." required {{ auth()->user()->role === 'admin' ? 'readonly' : '' }}></textarea>
             </div>
 
             {{-- Resep Obat (Tanpa Harga — Kasir yang isi) --}}
@@ -53,9 +59,11 @@
                         </p>
                         <p class="text-xs text-gray-400 mt-0.5">Harga obat akan diisi oleh bagian Kasir.</p>
                     </div>
+                    @if(auth()->user()->role !== 'admin')
                     <button type="button" id="addMedicineBtn" class="text-xs bg-secondary text-white px-4 py-1.5 rounded-lg hover:bg-opacity-90 transition-all font-bold flex-shrink-0">
                         <i class="fa-solid fa-plus mr-1"></i> Tambah Obat
                     </button>
+                    @endif
                 </div>
 
                 {{-- Header Kolom --}}
@@ -69,15 +77,15 @@
                 <div id="medicineContainer" class="space-y-2">
                     <div class="grid grid-cols-12 gap-2 medicine-row items-center">
                         <div class="col-span-12 md:col-span-5">
-                            <select name="medicines[0][obat_id]" class="select2-obat w-full bg-white border border-gray-200 rounded-xl p-2.5 text-sm outline-none focus:ring-2 focus:ring-secondary/20" required>
+                            <select name="medicines[0][obat_id]" class="select2-obat w-full bg-white border border-gray-200 rounded-xl p-2.5 text-sm outline-none focus:ring-2 focus:ring-secondary/20" required {{ auth()->user()->role === 'admin' ? 'disabled' : '' }}>
                                 <option value="">Ketik/Pilih Obat...</option>
                                 @foreach($obats as $obat)
                                     <option value="{{ $obat->id }}">{{ $obat->nama_obat }} (Stok: {{ $obat->stok }})</option>
                                 @endforeach
                             </select>
                         </div>
-                        <input type="number" name="medicines[0][qty]" placeholder="Qty" min="1" class="col-span-4 md:col-span-2 bg-white border border-gray-200 rounded-xl p-2.5 text-sm outline-none focus:ring-2 focus:ring-secondary/20" required>
-                        <input type="text" name="medicines[0][rules]" placeholder="Contoh: 3x1 sesudah makan" class="col-span-8 md:col-span-4 bg-white border border-gray-200 rounded-xl p-2.5 text-sm outline-none focus:ring-2 focus:ring-secondary/20" required>
+                        <input type="number" name="medicines[0][qty]" placeholder="Qty" min="1" class="col-span-4 md:col-span-2 bg-white border border-gray-200 rounded-xl p-2.5 text-sm outline-none focus:ring-2 focus:ring-secondary/20" required {{ auth()->user()->role === 'admin' ? 'readonly' : '' }}>
+                        <input type="text" name="medicines[0][rules]" placeholder="Contoh: 3x1 sesudah makan" class="col-span-8 md:col-span-4 bg-white border border-gray-200 rounded-xl p-2.5 text-sm outline-none focus:ring-2 focus:ring-secondary/20" required {{ auth()->user()->role === 'admin' ? 'readonly' : '' }}>
                         <div class="col-span-12 md:col-span-1 flex justify-end">
                             {{-- Baris pertama tidak bisa dihapus --}}
                         </div>
@@ -92,9 +100,15 @@
             </div>
 
             <div class="pt-2">
+                @if(auth()->user()->role === 'admin')
+                <button type="button" onclick="history.back()" class="w-full bg-gray-500 text-white py-4 rounded-2xl font-bold text-base shadow-lg shadow-gray-500/30 hover:bg-gray-600 transition-all flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-arrow-left"></i> Kembali
+                </button>
+                @else
                 <button type="submit" class="w-full bg-primary text-white py-4 rounded-2xl font-bold text-base shadow-lg shadow-primary/30 hover:bg-[#004f54] transition-all flex items-center justify-center gap-3">
                     <i class="fa-solid fa-paper-plane"></i> Selesai & Kirim ke Kasir
                 </button>
+                @endif
             </div>
         </form>
     </div>

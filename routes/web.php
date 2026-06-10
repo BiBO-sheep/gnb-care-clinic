@@ -41,12 +41,9 @@ Route::get('/login', function () {
 Route::middleware(['auth'])->prefix('klinik')->group(function () {
     
     // =========================================================
-    // RUTE KHUSUS ADMIN
+    // RUTE UMUM (Dapat Dilihat Admin & Dokter)
     // =========================================================
-    Route::middleware([function ($request, $next) {
-        if ($request->user()->role !== 'admin') abort(403, 'Akses ditolak: Khusus Admin.');
-        return $next($request);
-    }])->group(function () {
+    Route::middleware([])->group(function () {
         
         // 0. DASHBOARD ANALYTICS
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -78,12 +75,9 @@ Route::middleware(['auth'])->prefix('klinik')->group(function () {
     });
 
     // =========================================================
-    // RUTE KHUSUS DOKTER
+    // RUTE HALAMAN DOKTER
     // =========================================================
-    Route::middleware([function ($request, $next) {
-        if ($request->user()->role !== 'dokter') abort(403, 'Akses ditolak: Khusus Dokter.');
-        return $next($request);
-    }])->group(function () {
+    Route::middleware([])->group(function () {
         
         // 2. RUTE RUANG DOKTER (Ngetik Resep & Periksa)
         Route::get('/doctor', [DoctorController::class, 'index']);
