@@ -10,8 +10,8 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\InvoiceController;
 
 // Rute Publik (Tidak perlu token / Belum Login)
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
+Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:register');
 Route::post('/auth/google', [AuthController::class, 'googleLogin']);
 
 // Rute Terproteksi (Wajib pakai token dari login)
@@ -25,7 +25,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile', [App\Http\Controllers\Api\ProfileController::class, 'show']);
     Route::put('/profile/update', [App\Http\Controllers\Api\ProfileController::class, 'update']);
     Route::post('/profile/change-password', [App\Http\Controllers\Api\ProfileController::class, 'changePassword']);
-    Route::post('/profile/update-fcm-token', [App\Http\Controllers\Api\ProfileController::class, 'updateFcmToken']);
+    Route::post('/profile/update-fcm-token', [App\Http\Controllers\Api\ProfileController::class, 'updateFcmToken'])->middleware('throttle:fcm-update');
     Route::post('/logout', [AuthController::class, 'logout']);
 
     // Data Klinik

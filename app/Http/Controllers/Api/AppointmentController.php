@@ -7,17 +7,14 @@ use App\Models\Appointment;
 use App\Models\MedicalRecord;
 use App\Models\Prescription;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreAppointmentRequest;
 use Illuminate\Support\Facades\Auth;
 
 class AppointmentController extends Controller
 {
-    public function store(Request $request)
+    public function store(StoreAppointmentRequest $request)
     {
-        $request->validate([
-            'poli_id' => 'required',
-            'tanggal' => 'required',
-            'jam' => 'required',
-        ]);
+        $validated = $request->validated();
 
         if (!Auth::guard('sanctum')->check()) {
             return response()->json(['message' => 'Unauthenticated'], 401);
@@ -38,8 +35,13 @@ class AppointmentController extends Controller
             ], 400);
         }
 
-        $countToday = Appointment::where('tanggal', $request->tanggal)->count();
-        $queueNumber = 'A-' . ($countToday + 1);
+        $countSlot = Appointment::where('tanggal', $request->tanggal)
+            ->where('poli_id', $request->poli_id)
+            ->where('jam', $request->jam)
+            ->count();
+        
+        $jamFormat = str_replace(':', '', $request->jam);
+        $queueNumber = 'A-' . $jamFormat . '-' . ($countSlot + 1);
 
         $appointment = Appointment::create([
             'user_id' => $userId,
@@ -63,28 +65,45 @@ class AppointmentController extends Controller
     public function getQueueStatus(Request $request)
     {
         $userId = $request->user()->id;
-        $today = date('M d, 2026');
+        $today = date('M d, Y');
 
-        $myAppointment = Appointment::where('user_id', $userId)
-            // ->where('tanggal', $today) // DEMO MODE
-            ->whereIn('status', ['scheduled', 'check_in', 'pemeriksaan'])
-            ->first();
+        $query = Appointment::where('user_id', $userId)
+            ->whereIn('status', ['scheduled', 'check_in', 'pemeriksaan']);
 
-        $nowServingStr = Appointment::where('status', 'pemeriksaan')
-            // ->where('tanggal', $today) // DEMO MODE
-            ->min('queue_number');
+        if (!env('APP_DEMO_MODE', false)) {
+            $query->whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') = STR_TO_DATE(?, '%b %d, %Y')", [$today]);
+        }
 
-        $nowServing = $nowServingStr ?? 'A-1';
+        $myAppointment = $query->first();
 
+        $nowServing = '-';
         $peopleAhead = 0;
+
         if ($myAppointment) {
-            $myQ = (int) str_replace('A-', '', $myAppointment->queue_number);
-            $nowQ = (int) str_replace('A-', '', $nowServing);
-            $peopleAhead = max(0, $myQ - $nowQ);
+            $nowServingAppt = Appointment::where('tanggal', $myAppointment->tanggal)
+                ->where('poli_id', $myAppointment->poli_id)
+                ->where('status', 'pemeriksaan')
+                ->orderBy('jam', 'asc')
+                ->orderBy('id', 'asc')
+                ->first();
+
+            $nowServing = $nowServingAppt ? $nowServingAppt->queue_number : 'Persiapan';
+
+            $peopleAhead = Appointment::where('tanggal', $myAppointment->tanggal)
+                ->where('poli_id', $myAppointment->poli_id)
+                ->whereIn('status', ['scheduled', 'check_in'])
+                ->where(function ($query) use ($myAppointment) {
+                    $query->where('jam', '<', $myAppointment->jam)
+                          ->orWhere(function ($q) use ($myAppointment) {
+                              $q->where('jam', $myAppointment->jam)
+                                ->where('id', '<', $myAppointment->id);
+                          });
+                })
+                ->count();
         }
 
         return response()->json([
-            'my_queue' => $myAppointment ? $myAppointment->queue_number : 'A-0',
+            'my_queue' => $myAppointment ? $myAppointment->queue_number : '-',
             'now_serving' => $nowServing,
             'people_ahead' => $peopleAhead
         ]);
@@ -380,15 +399,19 @@ class AppointmentController extends Controller
 
     public function getActiveQueue(Request $request)
     {
-        $today = date('M d, Y'); // Format: May 06, 2026
+        $today = date('M d, Y'); 
 
-        $appointment = Appointment::where('user_id', Auth::id())
-            // ->whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') = STR_TO_DATE(?, '%b %d, %Y')", [$today]) // DEMO MODE
+        $query = Appointment::where('user_id', Auth::id())
             ->whereIn('status', ['scheduled', 'check_in', 'pemeriksaan'])
             ->with(['dokter', 'poli'])
             ->orderBy('tanggal', 'asc')
-            ->orderBy('jam', 'asc')
-            ->first();
+            ->orderBy('jam', 'asc');
+
+        if (!env('APP_DEMO_MODE', false)) {
+            $query->whereRaw("STR_TO_DATE(tanggal, '%b %d, %Y') = STR_TO_DATE(?, '%b %d, %Y')", [$today]);
+        }
+
+        $appointment = $query->first();
 
         if (!$appointment) {
             return response()->json([

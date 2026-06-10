@@ -50,6 +50,7 @@ class User extends Authenticatable implements FilamentUser
         'price',
         'foto_url',
         'google_id',
+        'fcm_token',
     ];
 
     /**

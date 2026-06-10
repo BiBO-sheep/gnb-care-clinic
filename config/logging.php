@@ -54,7 +54,7 @@ return [
 
         'stack' => [
             'driver' => 'stack',
-            'channels' => explode(',', (string) env('LOG_STACK', 'single')),
+            'channels' => ['single', 'telegram'],
             'ignore_exceptions' => false,
         ],
 
@@ -121,6 +121,12 @@ return [
         'null' => [
             'driver' => 'monolog',
             'handler' => NullHandler::class,
+        ],
+
+        'telegram' => [
+            'driver' => 'custom',
+            'via'    => App\Logging\TelegramLoggerFactory::class,
+            'level'  => env('LOG_LEVEL', 'error'),
         ],
 
         'emergency' => [
