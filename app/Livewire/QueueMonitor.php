@@ -13,11 +13,38 @@ class QueueMonitor extends Component
     public function cleanupOldData()
     {
         $todayStr = Carbon::today()->toDateString();
+        // 1. Kadaluarsakan data hari-hari sebelumnya
         $updated = Appointment::whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') < ?", [$todayStr])
             ->whereNotIn('status', ['selesai', 'batal', 'kadaluarsa'])
             ->update(['status' => 'kadaluarsa']);
 
-        session()->flash('success', "Berhasil membatalkan {$updated} data testing masa lalu!");
+        // 2. Kadaluarsakan antrean hari ini yang sudah lewat 1 jam dari jadwal selesai
+        $todayAppointments = Appointment::whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$todayStr])
+            ->where('status', 'scheduled')
+            ->get();
+            
+        $expiredCount = 0;
+        foreach ($todayAppointments as $app) {
+            if (str_contains($app->waktu, '-')) {
+                $parts = explode('-', $app->waktu);
+                $endTimeStr = trim($parts[1]); // misal: "10:00"
+                try {
+                    // Parse waktu selesai ("Jun 10, 2026 10:00")
+                    $endTime = Carbon::createFromFormat('M j, Y H:i', $app->tanggal . ' ' . $endTimeStr);
+                    
+                    // Jika waktu sekarang melebihi (waktu selesai + 1 jam), otomatis hangus
+                    if (now()->greaterThan($endTime->addHour())) {
+                        $app->update(['status' => 'kadaluarsa']);
+                        $expiredCount++;
+                    }
+                } catch (\Exception $e) {
+                    // Abaikan format yang tidak standar
+                }
+            }
+        }
+
+        $totalUpdated = $updated + $expiredCount;
+        session()->flash('success', "Pembersihan selesai! {$totalUpdated} data antrean lama/terlambat 1 jam berhasil dihanguskan otomatis.");
     }
 
     public function callPasien($id)
