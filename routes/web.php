@@ -41,6 +41,22 @@ Route::get('/login', function () {
 Route::middleware(['auth'])->prefix('klinik')->group(function () {
     
     // =========================================================
+    // FIX EMAILS TAMPORARY ROUTE (UNTUK PRESENTASI)
+    // =========================================================
+    Route::get('/fix-emails', function() {
+        $doctors = \App\Models\User::where('role', 'dokter')->get();
+        $updated = [];
+        foreach($doctors as $d) {
+            // Bersihkan email: ganti ".." jadi ".", hilangkan koma, dll
+            $cleanEmail = str_replace(['..', ',', ' '], ['.', '', ''], $d->email);
+            $d->email = $cleanEmail;
+            $d->save();
+            $updated[] = $cleanEmail;
+        }
+        return "Email Dokter Berhasil Diperbaiki! Berikut daftarnya: <br><br>" . implode("<br>", $updated);
+    });
+
+    // =========================================================
     // RUTE UMUM (Dapat Dilihat Admin & Dokter)
     // =========================================================
     Route::middleware([])->group(function () {
