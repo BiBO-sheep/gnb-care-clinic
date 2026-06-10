@@ -52,33 +52,33 @@
 
             <p class="px-2 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Menu Utama</p>
             
-            <a href="/klinik/dashboard" class="flex items-center px-4 py-3 mb-2 rounded-xl transition-all {{ request()->is('klinik/dashboard*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
+            <a href="/klinik/dashboard" wire:navigate class="flex items-center px-4 py-3 mb-2 rounded-xl transition-all {{ request()->is('klinik/dashboard*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
                 <i class="fa-solid fa-chart-line w-6 text-center mr-2"></i> Dashboard
             </a>
 
-            <a href="{{ route('reports.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-xl transition-all {{ request()->is('klinik/reports*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
+            <a href="{{ route('reports.index') }}" wire:navigate class="flex items-center px-4 py-3 mb-2 rounded-xl transition-all {{ request()->is('klinik/reports*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
                 <i class="fa-solid fa-print w-6 text-center mr-2"></i> Laporan & Export
             </a>
 
-            <a href="/klinik/queue" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/queue*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
+            <a href="/klinik/queue" wire:navigate class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/queue*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
                 <i class="fa-solid fa-list-ol w-6 text-center mr-2"></i> Monitor Antrean
             </a>
 
-            <a href="/klinik/pasien" class="flex items-center px-4 py-3 mb-2 rounded-xl transition-all {{ request()->is('klinik/pasien*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
+            <a href="/klinik/pasien" wire:navigate class="flex items-center px-4 py-3 mb-2 rounded-xl transition-all {{ request()->is('klinik/pasien*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
                 <i class="fa-solid fa-address-book w-6 text-center mr-2"></i> Buku Pasien
             </a>
 
-            <a href="/klinik/obat" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/obat*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
+            <a href="/klinik/obat" wire:navigate class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/obat*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
                 <i class="fa-solid fa-pills w-6 text-center mr-2"></i> Kelola Obat
             </a>
 
             <p class="px-2 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 mt-6">Medis & Kasir</p>
             
-            <a href="/klinik/doctor" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/doctor*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
+            <a href="/klinik/doctor" wire:navigate class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/doctor*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
                 <i class="fa-solid fa-user-doctor w-6 text-center mr-2"></i> Ruang Dokter
             </a>
 
-            <a href="/klinik/kasir" class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/kasir*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
+            <a href="/klinik/kasir" wire:navigate class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('klinik/kasir*') ? 'bg-primary-light text-primary font-bold' : 'text-gray-500 hover:bg-gray-50 hover:text-primary font-semibold' }}">
                 <i class="fa-solid fa-cash-register w-6 text-center mr-2"></i> Pembayaran
             </a>
 
