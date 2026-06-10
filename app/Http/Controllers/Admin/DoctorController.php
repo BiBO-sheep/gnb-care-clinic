@@ -35,6 +35,7 @@ class DoctorController extends Controller
             $activeQuery->where('poli_id', $user->poli_id);
             $waitingPatients = $waitingQuery->get();
             $activePatient = $activeQuery->first();
+            $activePatients = null; // Prevent undefined variable in compact()
             $isAdmin = false;
         } else {
             // Admin Mode: See all, group by poli
