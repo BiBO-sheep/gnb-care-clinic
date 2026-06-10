@@ -22,6 +22,7 @@ class AppointmentController extends Controller
     // 1. Fungsi Panggil Pasien (Ubah status jadi check_in)
     public function callPasien($id)
     {
+        abort_if(auth()->user()->role === 'dokter', 403, 'Akses Ditolak: Dokter tidak boleh memanggil pasien.');
         $appointment = Appointment::findOrFail($id);
         $appointment->status = 'check_in';
         $appointment->touch(); // Paksa update timestamp updated_at biar Flutter deteksi 'Panggil Ulang'

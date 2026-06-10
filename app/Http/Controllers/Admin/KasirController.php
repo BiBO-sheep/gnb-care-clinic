@@ -43,8 +43,41 @@ class KasirController extends Controller
     // Kasir tidak lagi menginput harga karena sudah otomatis dari Master Obat
 
 
+    public function pay(Request $request, $id)
+    {
+        abort_if(auth()->user()->role === 'dokter', 403, 'Akses Ditolak: Dokter tidak boleh memproses pembayaran.');
+        $invoice = Invoice::with('appointment.medical_record.prescriptions')->findOrFail($id);
+        
+        // Update status tagihan jadi lunas
+        $invoice->update([
+            'status' => 'paid',
+            'payment_method' => 'cashier'
+        ]);
+
+        // Kurangi stok obat
+        $medicalRecord = $invoice->appointment->medical_record ?? null;
+        if ($medicalRecord && $medicalRecord->prescriptions) {
+            foreach ($medicalRecord->prescriptions as $prescription) {
+                if ($prescription->obat_id) {
+                    $obat = \App\Models\Obat::find($prescription->obat_id);
+                    if ($obat) {
+                        // Extract numeric qty from dosage string (e.g., "2 Pcs" -> 2)
+                        $qty = (int) filter_var($prescription->dosage, FILTER_SANITIZE_NUMBER_INT) ?: 1;
+                        $obat->stok -= $qty;
+                        $obat->save();
+                    }
+                }
+            }
+        }
+
+        $invoice->appointment->user->notify(new \App\Notifications\PaymentSuccessNotification());
+
+        return back()->with('success', 'Pembayaran lunas! Stok obat otomatis dikurangi dan notifikasi dikirim.');
+    }
+
     public function konfirmasiLunas($id)
     {
+        abort_if(auth()->user()->role === 'dokter', 403, 'Akses Ditolak: Dokter tidak boleh memproses pembayaran.');
         $invoice = Invoice::with('appointment.medical_record.prescriptions')->findOrFail($id);
         
         // Update status tagihan jadi lunas

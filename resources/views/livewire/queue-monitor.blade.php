@@ -224,3 +224,15 @@
     </div>
 
 </div>
+
+<script>
+    document.addEventListener('livewire:initialized', () => {
+        Livewire.on('play-audio', (event) => {
+            let data = event[0];
+            let msg = new SpeechSynthesisUtterance("Panggilan antrean nomor " + data.queue_number + ", dipersilahkan masuk ke ruangan " + data.poli);
+            msg.lang = 'id-ID';
+            msg.rate = 0.9; // Slightly slower for clarity
+            window.speechSynthesis.speak(msg);
+        });
+    });
+</script>
