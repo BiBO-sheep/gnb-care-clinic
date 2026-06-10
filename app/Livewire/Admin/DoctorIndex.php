@@ -25,9 +25,19 @@ class DoctorIndex extends Component
                             ->whereRaw("STR_TO_DATE(tanggal, '%b %e, %Y') = ?", [$today])
                             ->where('status', 'pemeriksaan');
                             
-        if ($user && $user->role === 'dokter' && $user->poli_id) {
-            $waitingQuery->where('poli_id', $user->poli_id);
-            $activeQuery->where('poli_id', $user->poli_id);
+        if ($user && $user->role === 'dokter') {
+            $waitingQuery->where(function($query) use ($user) {
+                $query->where('dokter_id', $user->id);
+                if ($user->poli_id) {
+                    $query->orWhere('poli_id', $user->poli_id);
+                }
+            });
+            $activeQuery->where(function($query) use ($user) {
+                $query->where('dokter_id', $user->id);
+                if ($user->poli_id) {
+                    $query->orWhere('poli_id', $user->poli_id);
+                }
+            });
             $waitingPatients = $waitingQuery->get();
             $activePatient = $activeQuery->first();
             $activePatients = null; 
