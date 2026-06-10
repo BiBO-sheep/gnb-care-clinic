@@ -1,3 +1,6 @@
+@section('title', 'Pembayaran & Kasir')
+@section('header', 'Kasir Klinik')
+
 <div class="space-y-6">
 
     {{-- Statistik --}}

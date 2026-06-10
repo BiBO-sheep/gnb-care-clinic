@@ -1,3 +1,6 @@
+@section('title', 'Dashboard')
+@section('header', 'Dashboard')
+
 <div class="space-y-8">
 
     {{-- ================================================================ --}}

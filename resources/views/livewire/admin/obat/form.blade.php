@@ -1,3 +1,6 @@
+@section('title', $isEdit ? 'Edit Obat' : 'Tambah Obat')
+@section('header', $isEdit ? 'Edit Data Obat' : 'Tambah Obat Baru')
+
 <div class="max-w-2xl mx-auto">
     <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100">
         <div class="mb-8 border-b border-gray-100 pb-6">
@@ -52,11 +55,11 @@
                 @error('keterangan') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
             </div>
 
-            <div class="pt-4 flex gap-4">
-                <a href="/klinik/obat" wire:navigate class="w-full sm:w-auto px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-all text-center">
+            <div class="pt-4 flex flex-col sm:flex-row gap-4">
+                <a href="/klinik/obat" wire:navigate class="w-full sm:w-1/3 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-all text-center">
                     Batal
                 </a>
-                <button type="submit" class="flex-1 bg-primary hover:bg-[#004f54] text-white font-bold py-3 rounded-xl transition-all shadow-md shadow-primary/20 flex items-center justify-center gap-2">
+                <button type="submit" class="w-full sm:w-2/3 bg-primary hover:bg-[#004f54] text-white font-bold py-3 rounded-xl transition-all shadow-md shadow-primary/20 flex items-center justify-center gap-2">
                     <i class="fa-solid fa-save"></i> Simpan Data Obat
                 </button>
             </div>

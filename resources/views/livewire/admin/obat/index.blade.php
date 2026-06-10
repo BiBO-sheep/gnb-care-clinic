@@ -1,3 +1,6 @@
+@section('title', 'Manajemen Obat')
+@section('header', 'Data Obat')
+
 <div class="space-y-6">
 
     @if(session('success'))

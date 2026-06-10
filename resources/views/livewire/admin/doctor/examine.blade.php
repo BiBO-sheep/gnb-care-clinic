@@ -1,3 +1,6 @@
+@section('title', 'Pemeriksaan: ' . ($appointment->user->name ?? 'Pasien'))
+@section('header', 'Pemeriksaan Medis')
+
 <div class="max-w-2xl mx-auto">
     <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100">
         
@@ -72,7 +75,7 @@
                     <p class="col-span-1"></p>
                 </div>
 
-                <div class="space-y-2">
+                <div class="space-y-4">
                     @foreach($medicines as $index => $medicine)
                     <div class="grid grid-cols-12 gap-2 medicine-row items-center">
                         <div class="col-span-12 md:col-span-5">

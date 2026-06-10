@@ -1,3 +1,6 @@
+@section('title', 'Rekam Medis - ' . $user->name)
+@section('header', 'Rekam Medis Pasien')
+
 <div class="space-y-8">
     <!-- Profile Card -->
     <div class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 flex flex-col md:flex-row gap-8 items-start md:items-center relative overflow-hidden">

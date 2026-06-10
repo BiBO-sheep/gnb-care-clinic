@@ -1,3 +1,6 @@
+@section('title', 'Ruang Dokter')
+@section('header', 'Ruang Dokter')
+
 <div wire:poll.10s class="space-y-8">
     @if(!$isAdmin)
         {{-- VIEW UNTUK DOKTER (Mode Normal) --}}

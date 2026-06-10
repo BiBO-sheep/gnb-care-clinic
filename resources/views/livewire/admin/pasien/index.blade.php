@@ -1,3 +1,6 @@
+@section('title', 'Buku Pasien')
+@section('header', 'Daftar Pasien')
+
 <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
     <div class="p-6 border-b border-gray-100 flex justify-between items-center">
         <h3 class="font-bold text-lg text-gray-800">Data Pasien ({{ $pasiens->count() }})</h3>
