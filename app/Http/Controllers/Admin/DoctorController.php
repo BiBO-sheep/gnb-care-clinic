@@ -31,11 +31,20 @@ class DoctorController extends Controller
                             ->where('status', 'pemeriksaan');
                             
         if ($user && $user->role === 'dokter' && $user->poli_id) {
+            $waitingQuery->where('poli_id', $user->poli_id);
             $activeQuery->where('poli_id', $user->poli_id);
+            $waitingPatients = $waitingQuery->get();
+            $activePatient = $activeQuery->first();
+            $isAdmin = false;
+        } else {
+            // Admin Mode: See all, group by poli
+            $waitingPatients = $waitingQuery->get()->groupBy('poli.name');
+            $activePatients = $activeQuery->get()->groupBy('poli.name');
+            $activePatient = null;
+            $isAdmin = true;
         }
-        $activePatient = $activeQuery->first();
 
-        return view('admin.doctor.index', compact('waitingPatients', 'activePatient'));
+        return view('admin.doctor.index', compact('waitingPatients', 'activePatient', 'activePatients', 'isAdmin'));
     }
 
     public function periksa($id)

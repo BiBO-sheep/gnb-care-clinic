@@ -2,64 +2,71 @@
 
     <div class="lg:col-span-2 space-y-8">
 
-        {{-- CARD: Sedang Dilayani --}}
-        <div class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 relative overflow-hidden">
-            <div class="absolute -right-10 -top-10 w-40 h-40 bg-primaryLight rounded-full opacity-50 blur-2xl"></div>
+        {{-- SECTION: Sedang Dilayani (Multi-Poli) --}}
+        @if($nowServing->count() > 0)
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            @foreach($nowServing as $serving)
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 relative overflow-hidden">
+                <div class="absolute -right-10 -top-10 w-32 h-32 bg-primaryLight rounded-full opacity-50 blur-2xl"></div>
 
-            <div class="flex justify-between items-start relative z-10">
-                <div>
-                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full {{ $nowServing && $nowServing->status == 'check_in' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700' }} font-bold text-xs mb-4">
-                        <span class="w-2 h-2 rounded-full {{ $nowServing && $nowServing->status == 'check_in' ? 'bg-amber-500' : 'bg-green-500' }} animate-pulse"></span>
-                        @if($nowServing) 
-                            {{ $nowServing->status == 'check_in' ? 'SEDANG DIPANGGIL' : 'SEDANG MELAYANI' }}
-                        @else 
-                            ANTREAN KOSONG 
-                        @endif
-                    </span>
-                    <h2 class="text-gray-500 font-bold text-sm uppercase tracking-wider mb-1">Nomor Antrean</h2>
-                    <p class="text-7xl font-extrabold text-primary mb-6">
-                        {{ $nowServing ? $nowServing->queue_number : '--' }}
+                <div class="flex flex-col h-full relative z-10">
+                    <div class="mb-4">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full {{ $serving->status == 'check_in' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700' }} font-bold text-xs">
+                            <span class="w-2 h-2 rounded-full {{ $serving->status == 'check_in' ? 'bg-amber-500' : 'bg-green-500' }} animate-pulse"></span>
+                            {{ $serving->status == 'check_in' ? 'SEDANG DIPANGGIL' : 'SEDANG MELAYANI' }}
+                        </span>
+                    </div>
+
+                    <h2 class="text-gray-500 font-bold text-xs uppercase tracking-wider mb-1">Nomor Antrean</h2>
+                    <p class="text-5xl font-extrabold text-primary mb-4">
+                        {{ $serving->queue_number }}
                     </p>
 
-                    @if($nowServing)
-                    <div class="space-y-2">
-                        <p class="text-lg font-bold text-gray-800">
-                            <i class="fa-solid fa-user text-gray-400 w-6"></i>
-                            {{ $nowServing->user->name ?? 'Pasien' }}
+                    <div class="space-y-1 mb-6 flex-1">
+                        <p class="text-base font-bold text-gray-800">
+                            <i class="fa-solid fa-user text-gray-400 w-5"></i>
+                            {{ $serving->user->name ?? 'Pasien' }}
                         </p>
-                        <p class="text-sm font-body text-gray-500">
-                            <i class="fa-solid fa-stethoscope text-gray-400 w-6"></i>
-                            {{ $nowServing->poli->name ?? 'Poli' }} (Dr. {{ $nowServing->dokter->name ?? 'Dokter' }})
+                        <p class="text-xs font-body text-gray-500">
+                            <i class="fa-solid fa-stethoscope text-gray-400 w-5"></i>
+                            <strong class="text-primary">{{ $serving->poli->name ?? 'Poli' }}</strong> (Dr. {{ $serving->dokter->name ?? 'Dokter' }})
                         </p>
                     </div>
-                    @endif
-                </div>
 
-                @if($nowServing)
-                <div class="flex flex-col gap-4">
-                    @if($nowServing->status == 'check_in')
-                        <form action="/klinik/appointment/{{ $nowServing->id }}/call" method="POST">
-                            @csrf
-                            <button type="submit" class="bg-primary hover:bg-[#004f54] text-white px-8 py-4 rounded-2xl font-bold shadow-lg shadow-primary/30 transition-all flex items-center justify-center gap-3">
-                                <i class="fa-solid fa-bullhorn text-xl"></i> Panggil Ulang
-                            </button>
-                        </form>
-                        <form action="/klinik/appointment/{{ $nowServing->id }}/progress" method="POST">
-                            @csrf
-                            <button type="submit" class="bg-white hover:bg-gray-50 text-green-600 border border-green-200 px-8 py-4 rounded-2xl font-bold shadow-sm transition-all flex items-center justify-center gap-3 w-full">
-                                <i class="fa-solid fa-check text-xl"></i> Pasien Masuk
-                            </button>
-                        </form>
-                    @else
-                        <div class="bg-green-50 text-green-700 p-4 rounded-2xl border border-green-100 flex items-center gap-3">
-                            <i class="fa-solid fa- stethoscope text-xl"></i>
-                            <span class="font-bold">Pasien di Ruangan</span>
-                        </div>
-                    @endif
+                    <div class="flex flex-col gap-2 mt-auto">
+                        @if($serving->status == 'check_in')
+                            <form action="/klinik/appointment/{{ $serving->id }}/call" method="POST">
+                                @csrf
+                                <button type="submit" class="bg-primary hover:bg-[#004f54] text-white px-4 py-3 rounded-xl font-bold shadow-md shadow-primary/20 transition-all flex items-center justify-center gap-2 w-full text-sm">
+                                    <i class="fa-solid fa-bullhorn"></i> Panggil Ulang
+                                </button>
+                            </form>
+                            <form action="/klinik/appointment/{{ $serving->id }}/progress" method="POST">
+                                @csrf
+                                <button type="submit" class="bg-white hover:bg-gray-50 text-green-600 border border-green-200 px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 w-full text-sm">
+                                    <i class="fa-solid fa-check"></i> Pasien Masuk
+                                </button>
+                            </form>
+                        @else
+                            <div class="bg-green-50 text-green-700 p-3 rounded-xl border border-green-100 flex items-center justify-center gap-2 text-sm">
+                                <i class="fa-solid fa-stethoscope"></i>
+                                <span class="font-bold">Pasien di Ruangan</span>
+                            </div>
+                        @endif
+                    </div>
                 </div>
-                @endif
             </div>
+            @endforeach
         </div>
+        @else
+        <div class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 relative overflow-hidden text-center">
+            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gray-100 text-gray-500 font-bold text-xs mb-4">
+                <span class="w-2 h-2 rounded-full bg-gray-400"></span> ANTREAN KOSONG
+            </span>
+            <p class="text-5xl font-extrabold text-gray-300 mb-2">--</p>
+            <p class="text-sm font-body text-gray-400">Belum ada pasien yang dipanggil ke ruangan.</p>
+        </div>
+        @endif
 
         @if(session('success'))
         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl relative mb-4" role="alert">

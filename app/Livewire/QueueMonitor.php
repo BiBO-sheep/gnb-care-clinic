@@ -29,7 +29,7 @@ class QueueMonitor extends Component
 
                         ->whereIn('status', ['pemeriksaan', 'check_in'])
                         ->orderByRaw("CASE WHEN status = 'check_in' THEN 1 ELSE 2 END")
-                        ->first();
+                        ->get();
 
         // 1. Antrean Hari Ini (Status: scheduled)
         $antreanHariIni = Appointment::with(['user', 'poli'])
