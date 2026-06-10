@@ -131,10 +131,10 @@
                 <div class="h-8 w-px bg-gray-200"></div>
 
                 <div class="flex items-center cursor-pointer">
-                    <img src="https://ui-avatars.com/api/?name=Admin+Klinik&background=0B2B5E&color=fff" alt="User Avatar" class="w-10 h-10 rounded-full shadow-soft border-2 border-white">
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name ?? 'User') }}&background=0B2B5E&color=fff" alt="User Avatar" class="w-10 h-10 rounded-full shadow-soft border-2 border-white">
                     <div class="ml-3 hidden md:block">
-                        <p class="text-sm font-bold text-gray-800 leading-tight">Admin Utama</p>
-                        <p class="text-xs font-body text-gray-500">Resepsionis</p>
+                        <p class="text-sm font-bold text-gray-800 leading-tight">{{ auth()->user()->name ?? 'Guest' }}</p>
+                        <p class="text-xs font-body text-gray-500 capitalize">{{ auth()->user()->role ?? 'Unknown' }} {{ auth()->user()->poli ? '- ' . auth()->user()->poli->name : '' }}</p>
                     </div>
                 </div>
             </div>
