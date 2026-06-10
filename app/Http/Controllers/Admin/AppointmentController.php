@@ -19,7 +19,6 @@ class AppointmentController extends Controller
         return view('admin.queue');
     }
 
-    // 1. Fungsi Panggil Pasien (Ubah status jadi check_in)
     public function callPasien($id)
     {
         abort_if(auth()->user()->role === 'dokter', 403, 'Akses Ditolak: Dokter tidak boleh memanggil pasien.');
@@ -27,6 +26,41 @@ class AppointmentController extends Controller
         $appointment->status = 'check_in';
         $appointment->touch(); // Paksa update timestamp updated_at biar Flutter deteksi 'Panggil Ulang'
         $appointment->save();
+
+        // Kirim Notifikasi FCM untuk panggil pasien (Audio & Notif Flutter)
+        if ($appointment->user && $appointment->user->fcm_token) {
+            try {
+                putenv('GOOGLE_APPLICATION_CREDENTIALS=' . storage_path('app/firebase-adminsdk.json'));
+                $client = new \Google_Client();
+                $client->useApplicationDefaultCredentials();
+                $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
+                $httpClient = $client->authorize();
+
+                $message = [
+                    'message' => [
+                        'token' => $appointment->user->fcm_token,
+                        'notification' => [
+                            'title' => 'Panggilan Antrean!',
+                            'body' => 'Giliran Anda telah tiba (Antrean ' . $appointment->queue_number . '). Silakan menuju ' . ($appointment->poli->name ?? 'ruangan') . '.'
+                        ],
+                        'android' => [
+                            'priority' => 'high',
+                            'notification' => [
+                                'channel_id' => 'hospital_call_channel',
+                                'sound' => 'tingtung'
+                            ]
+                        ]
+                    ]
+                ];
+
+                $projectId = 'gandb-care-clinic';
+                $httpClient->post("https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send", [
+                    'json' => $message
+                ]);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('FCM Send Error: ' . $e->getMessage());
+            }
+        }
 
         return back()->with('success', 'Pasien nomor ' . $appointment->queue_number . ' dipanggil!');
     }
@@ -109,6 +143,40 @@ class AppointmentController extends Controller
 
             // E. Ubah Status Antrean Selesai
             $appointment->update(['status' => 'selesai']);
+
+            // Kirim Notifikasi Database ke Aplikasi Flutter
+            $appointment->user->notify(new \App\Notifications\ExaminationCompletedNotification());
+
+            // Kirim Notifikasi FCM agar Flutter tahu status berubah dan bisa auto-refresh history
+            if ($appointment->user && $appointment->user->fcm_token) {
+                try {
+                    putenv('GOOGLE_APPLICATION_CREDENTIALS=' . storage_path('app/firebase-adminsdk.json'));
+                    $client = new \Google_Client();
+                    $client->useApplicationDefaultCredentials();
+                    $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
+                    $httpClient = $client->authorize();
+
+                    $message = [
+                        'message' => [
+                            'token' => $appointment->user->fcm_token,
+                            'notification' => [
+                                'title' => 'Pemeriksaan Selesai',
+                                'body' => 'Pemeriksaan selesai. Resep dan tagihan sudah terbit.'
+                            ],
+                            'android' => [
+                                'priority' => 'high'
+                            ]
+                        ]
+                    ];
+
+                    $projectId = 'gandb-care-clinic';
+                    $httpClient->post("https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send", [
+                        'json' => $message
+                    ]);
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error('FCM Send Error: ' . $e->getMessage());
+                }
+            }
 
             DB::commit();
 
